@@ -12,6 +12,6 @@ package papeleria_estrella;
  */
 public class Main {
     public static void main(String[] args){
-    
+        Conectar conectar = new Conectar();
     } 
 }
