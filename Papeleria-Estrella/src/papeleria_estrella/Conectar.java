@@ -20,11 +20,10 @@ public class Conectar {
     Connection con;
     //Datos de conexion a base de datos
     private static final String driver = "com.mysql.jdbc.Driver";
-    private static final String user = "uhqnltdnpxd2j2by";
-    private static final String pass = "gRvU8dz1U43u2XKfPBDK";
     private static final String url = "jdbc:mysql://hv-mtl2-011.clvrcld.net:10624/baq7fnw62uwde1kyfv5g";
     
-    public Conectar(){
+    
+    protected Connection getConection(String user, String pass){
         //Reset a null conex a bd
         con=null;
         try{
@@ -42,5 +41,6 @@ public class Conectar {
             System.out.println("Error de conexión");
         }
         JOptionPane.showMessageDialog(null,"hola");
+        return con;
     }
 }
