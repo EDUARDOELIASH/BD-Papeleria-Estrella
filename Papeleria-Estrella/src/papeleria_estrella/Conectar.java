@@ -38,7 +38,7 @@ public class Conectar {
         }
         //Si conexion no exitosa
         catch(ClassNotFoundException | SQLException e){
-            System.out.println("Error de conexión");
+            JOptionPane.showMessageDialog(null, "Error de conexión");
         }
         JOptionPane.showMessageDialog(null,"hola");
         return con;
