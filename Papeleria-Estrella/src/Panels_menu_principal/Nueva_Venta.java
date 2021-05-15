@@ -32,7 +32,6 @@ public class Nueva_Venta extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         p_Nueva_Venta = new javax.swing.JPanel();
         pVenta = new javax.swing.JPanel();
@@ -113,9 +112,6 @@ public class Nueva_Venta extends javax.swing.JFrame {
         });
 
         lbl_Total_V.setText("Total de venta");
-
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, txtTotal_V, org.jdesktop.beansbinding.ELProperty.create("${editable} false"), txtTotal_V, org.jdesktop.beansbinding.BeanProperty.create("editable"));
-        bindingGroup.addBinding(binding);
 
         javax.swing.GroupLayout pEntradasLayout = new javax.swing.GroupLayout(pEntradas);
         pEntradas.setLayout(pEntradasLayout);
@@ -200,8 +196,6 @@ public class Nueva_Venta extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(p_Nueva_Venta, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-
-        bindingGroup.bind();
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -295,6 +289,5 @@ public class Nueva_Venta extends javax.swing.JFrame {
     private javax.swing.JTextField txtFecha_V;
     private javax.swing.JTextField txtNumero_Cl;
     private javax.swing.JTextField txtTotal_V;
-    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }

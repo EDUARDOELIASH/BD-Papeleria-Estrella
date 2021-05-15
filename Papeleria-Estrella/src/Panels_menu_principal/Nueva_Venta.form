@@ -197,9 +197,6 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtTotal_V">
-              <BindingProperties>
-                <BindingProperty name="editable" source="txtTotal_V" sourcePath="${editable} false" target="txtTotal_V" targetPath="editable" updateStrategy="0" immediately="false"/>
-              </BindingProperties>
             </Component>
           </SubComponents>
         </Container>
