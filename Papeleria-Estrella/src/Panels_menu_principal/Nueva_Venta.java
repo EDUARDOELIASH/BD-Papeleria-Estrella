@@ -113,6 +113,8 @@ public class Nueva_Venta extends javax.swing.JFrame {
 
         lbl_Total_V.setText("Total de venta");
 
+        txtTotal_V.setEditable(false);
+
         javax.swing.GroupLayout pEntradasLayout = new javax.swing.GroupLayout(pEntradas);
         pEntradas.setLayout(pEntradasLayout);
         pEntradasLayout.setHorizontalGroup(
