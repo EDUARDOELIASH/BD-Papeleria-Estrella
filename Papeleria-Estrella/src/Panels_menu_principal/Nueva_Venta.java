@@ -267,6 +267,7 @@ public class Nueva_Venta extends javax.swing.JFrame {
             public void run() {
                 Nueva_Venta ventana = new Nueva_Venta();
                 ventana.setVisible(true);
+                
                 int ancho = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width;
                 int alto = java.awt.Toolkit.getDefaultToolkit().getScreenSize().height;
                 ventana.setBounds((ancho/2) - (ventana.getWidth()/2), (alto/2) - (ventana.getHeight()/2), 500, 500);
