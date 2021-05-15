@@ -21,7 +21,6 @@ public class Nueva_Venta extends javax.swing.JFrame {
      */
     public Nueva_Venta() {
         initComponents();
-        
     }
 
     /**
@@ -201,8 +200,10 @@ public class Nueva_Venta extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+ 
+    //metodos de panel Nueva_Venta
     private String nuevo_Codigo_V (Connection con) throws SQLException{
+        //El resultado de este metodo se asigna a JTextField del Codigo_V de nueva venta
         //Hacer consulta a tabla ultima_venta
         String codigo_V;
         String sql = "SELECT Codigo_V FROM ultima_venta";
@@ -215,7 +216,19 @@ public class Nueva_Venta extends javax.swing.JFrame {
         }
         
         //Generar nuevo Codigo_V
+        String numero="";
+        String primerCaracter = codigo_V.substring(0,1);
+        for (int i=1; i<=codigo_V.length(); i++){
+            if (i!=codigo_V.length()){
+                numero += codigo_V.substring(i,i+1);
+            }
+            else{
+                codigo_V = "";
+                codigo_V += primerCaracter + (Integer.parseInt(numero) + 1);
+            }
+        }
         
+        //Cada vez que se registra una nueva venta, se actualiza tabla ultima_venta
         return codigo_V;
     }
     
