@@ -6,9 +6,12 @@
 package Panels_menu_principal;
 
 import java.sql.Connection;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
@@ -21,7 +24,7 @@ public class Nueva_Venta extends javax.swing.JFrame {
      */
     public Nueva_Venta() {
         initComponents();
-    }
+    }   
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -38,9 +41,9 @@ public class Nueva_Venta extends javax.swing.JFrame {
         lblFecha_V = new javax.swing.JLabel();
         lblNumero_Cl = new javax.swing.JLabel();
         txtCodigo_V = new javax.swing.JTextField();
-        txtFecha_V = new javax.swing.JTextField();
         txtNumero_Cl = new javax.swing.JTextField();
         btnNuevo_Cliente = new javax.swing.JButton();
+        jdchFecha_V = new com.toedter.calendar.JDateChooser();
         pEntradas = new javax.swing.JPanel();
         btn_Agregar_p_o_s = new javax.swing.JButton();
         lbl_Total_V = new javax.swing.JLabel();
@@ -56,6 +59,8 @@ public class Nueva_Venta extends javax.swing.JFrame {
 
         lblNumero_Cl.setText("Numero_Cl");
 
+        txtCodigo_V.setEditable(false);
+
         txtNumero_Cl.setText("0");
 
         btnNuevo_Cliente.setText("Nuevo Cliente");
@@ -64,6 +69,8 @@ public class Nueva_Venta extends javax.swing.JFrame {
                 btnNuevo_ClienteActionPerformed(evt);
             }
         });
+
+        jdchFecha_V.setDateFormatString("dd/MM/yyyy");
 
         javax.swing.GroupLayout pVentaLayout = new javax.swing.GroupLayout(pVenta);
         pVenta.setLayout(pVentaLayout);
@@ -80,8 +87,8 @@ public class Nueva_Venta extends javax.swing.JFrame {
                     .addComponent(txtNumero_Cl, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE)
                     .addComponent(btnNuevo_Cliente, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(txtCodigo_V, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txtFecha_V))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jdchFecha_V, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
         pVentaLayout.setVerticalGroup(
             pVentaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -91,9 +98,9 @@ public class Nueva_Venta extends javax.swing.JFrame {
                     .addComponent(lblCodigo_V)
                     .addComponent(txtCodigo_V, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pVentaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pVentaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblFecha_V)
-                    .addComponent(txtFecha_V, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jdchFecha_V, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pVentaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblNumero_Cl)
@@ -229,7 +236,22 @@ public class Nueva_Venta extends javax.swing.JFrame {
         }
         
         //Cada vez que se registra una nueva venta, se actualiza tabla ultima_venta
+        /*
+        txtCodigo_V.setText(nuevo_Codigo_V(con));
+        */
         return codigo_V;
+    }
+    
+    public Date fechaActual(){
+        Date fecha=new Date();
+        SimpleDateFormat formatoFecha=new SimpleDateFormat("dd/MM/YYYY");
+        
+        //el return de este metodo se asigna a txtFecha_V
+        /*
+            se puede añadir un listener para que no se pueda editar fecha
+            jdchFecha_V.setDate(fechaActual);
+        */
+        return fecha;
     }
     
     private void btn_Agregar_p_o_sActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_Agregar_p_o_sActionPerformed
@@ -293,6 +315,7 @@ public class Nueva_Venta extends javax.swing.JFrame {
     private javax.swing.JButton btnNuevo_Cliente;
     private javax.swing.JButton btnRegistrar;
     private javax.swing.JButton btn_Agregar_p_o_s;
+    private com.toedter.calendar.JDateChooser jdchFecha_V;
     private javax.swing.JLabel lblCodigo_V;
     private javax.swing.JLabel lblFecha_V;
     private javax.swing.JLabel lblNumero_Cl;
@@ -302,7 +325,6 @@ public class Nueva_Venta extends javax.swing.JFrame {
     private javax.swing.JPanel pVenta;
     private javax.swing.JPanel p_Nueva_Venta;
     private javax.swing.JTextField txtCodigo_V;
-    private javax.swing.JTextField txtFecha_V;
     private javax.swing.JTextField txtNumero_Cl;
     private javax.swing.JTextField txtTotal_V;
     // End of variables declaration//GEN-END:variables

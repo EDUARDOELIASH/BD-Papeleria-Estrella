@@ -81,9 +81,9 @@
                           <Component id="txtNumero_Cl" alignment="0" pref="215" max="32767" attributes="0"/>
                           <Component id="btnNuevo_Cliente" alignment="1" min="-2" max="-2" attributes="0"/>
                           <Component id="txtCodigo_V" alignment="1" max="32767" attributes="0"/>
-                          <Component id="txtFecha_V" max="32767" attributes="0"/>
+                          <Component id="jdchFecha_V" alignment="0" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace pref="46" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -96,9 +96,9 @@
                           <Component id="txtCodigo_V" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="lblFecha_V" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtFecha_V" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="lblFecha_V" min="-2" max="-2" attributes="0"/>
+                          <Component id="jdchFecha_V" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -129,8 +129,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtCodigo_V">
-            </Component>
-            <Component class="javax.swing.JTextField" name="txtFecha_V">
+              <Properties>
+                <Property name="editable" type="boolean" value="false"/>
+              </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtNumero_Cl">
               <Properties>
@@ -144,6 +145,11 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnNuevo_ClienteActionPerformed"/>
               </Events>
+            </Component>
+            <Component class="com.toedter.calendar.JDateChooser" name="jdchFecha_V">
+              <Properties>
+                <Property name="dateFormatString" type="java.lang.String" value="dd/MM/yyyy"/>
+              </Properties>
             </Component>
           </SubComponents>
         </Container>
