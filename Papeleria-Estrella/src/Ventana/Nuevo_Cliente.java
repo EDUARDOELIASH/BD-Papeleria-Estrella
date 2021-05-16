@@ -6,15 +6,19 @@
 package Ventana;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTable;
 
 /**
  *
  * @author Eduardo Elias Hernandez Moreno
  */
 public class Nuevo_Cliente extends JFrame{
+    JPanel pPrincipal;
+    JTable Nuevo_Cliente = new JTable();
     
     public Nuevo_Cliente (){
-    
+        initComponents();
     
     }
     
@@ -29,7 +33,7 @@ public class Nuevo_Cliente extends JFrame{
     }
     
     private void initComponents (){
-    
+        pPrincipal = new JPanel();
     
     }
 }

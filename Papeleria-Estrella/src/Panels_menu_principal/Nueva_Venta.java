@@ -256,6 +256,7 @@ public class Nueva_Venta extends javax.swing.JFrame {
     
     private void btn_Agregar_p_o_sActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_Agregar_p_o_sActionPerformed
         // TODO add your handling code here:
+        //Se abre ventana para agregar productos o servicios para venta
     }//GEN-LAST:event_btn_Agregar_p_o_sActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
