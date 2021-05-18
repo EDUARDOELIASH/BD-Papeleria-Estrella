@@ -13,6 +13,8 @@ import javax.swing.JPanel;
 public class Panel_Nueva_Venta extends JPanel{
     //Talves se necesite parametro Connection
     public Panel_Nueva_Venta (){
-    
+       
     }
+    
+    
 }
