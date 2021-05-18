@@ -7,7 +7,6 @@ package Ventana;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 
 /**
  *
@@ -15,11 +14,10 @@ import javax.swing.JTable;
  */
 public class Nuevo_Cliente extends JFrame{
     JPanel pPrincipal;
-    JTable Nuevo_Cliente = new JTable();
     
     public Nuevo_Cliente (){
         initComponents();
-    
+        
     }
     
     public static void main(String[] args){
@@ -33,7 +31,6 @@ public class Nuevo_Cliente extends JFrame{
     }
     
     private void initComponents (){
-        pPrincipal = new JPanel();
-    
+
     }
 }
