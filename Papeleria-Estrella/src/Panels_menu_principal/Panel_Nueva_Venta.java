@@ -44,14 +44,14 @@ public class Panel_Nueva_Venta extends JPanel{
         
         tProductos_Venta = new JTable();
         tServicios_Venta = new JTable();      
-        jstProductos = new JScrollPane();
-        jstServicios = new JScrollPane();
+        sptProductos = new JScrollPane();
+        sptServicios = new JScrollPane();
         
         tpTablas = new JTabbedPane(JTabbedPane.BOTTOM);
         
         btnNuevo_Cliente = new JButton();
         btnRegistrar = new JButton();
-        btnAgregar_p_o_s = new JButton();
+        btnNueva_fila = new JButton();
         jdchFecha_V = new com.toedter.calendar.JDateChooser();
         lblCodigo_V = new JLabel();
         lblFecha_V = new JLabel();
@@ -80,15 +80,15 @@ public class Panel_Nueva_Venta extends JPanel{
         //JTable's
         tProductos_Venta.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
-                    {null, null, null, null, null},
+                    {null, null, null, null},
                 },
                 new String [] {
-                    "Nombre_P", "Codigo_P", "Cantidad", "Precio", "Total"
+                    "Codigo_P", "Cantidad", "Precio", "Total"
                 }
             ));
             //En base al nombre del producto se busca el codigo en la base de datos
 
-            jstProductos.setViewportView(tProductos_Venta);
+            sptProductos.setViewportView(tProductos_Venta);
             
         tServicios_Venta.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
@@ -100,19 +100,19 @@ public class Panel_Nueva_Venta extends JPanel{
             ));
             //En base al nombre del producto se busca el codigo en la base de datos
 
-            jstServicios.setViewportView(tServicios_Venta);    
+            sptServicios.setViewportView(tServicios_Venta);    
         
         //JTabbedPane
         tpTablas.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         tpTablas.setFocusable(false);
 	tpTablas.setRequestFocusEnabled(false);    
         
-        tpTablas.addTab("Productos vendidos",jstProductos);
-        tpTablas.addTab("Servicios vendidos", jstServicios);
+        tpTablas.addTab("Productos vendidos",sptProductos);
+        tpTablas.addTab("Servicios vendidos", sptServicios);
             
         //JButton's
-        btnAgregar_p_o_s.setText("Agregar fila");
-        btnAgregar_p_o_s.addActionListener(new java.awt.event.ActionListener() {
+        btnNueva_fila.setText("Nueva fila");
+        btnNueva_fila.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 try{
@@ -132,7 +132,7 @@ public class Panel_Nueva_Venta extends JPanel{
             }
         });
         
-        btnRegistrar.setText("Registrar");
+        btnRegistrar.setText("Registrar venta");
         btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt){
@@ -189,7 +189,7 @@ public class Panel_Nueva_Venta extends JPanel{
         
         /*Contenido pBotones*/
         pBotones.setLayout(new GridLayout(1, 3));
-        pBotones.add(btnAgregar_p_o_s);
+        pBotones.add(btnNueva_fila);
         pBotones.add(btnNuevo_Cliente);
         pBotones.add(btnRegistrar);
     }
@@ -269,14 +269,15 @@ public class Panel_Nueva_Venta extends JPanel{
                        
     private JTable tProductos_Venta;
     private JTable tServicios_Venta;
-    private JScrollPane jstProductos;
-    private JScrollPane jstServicios;
+    private JScrollPane sptProductos;
+    private JScrollPane sptServicios;
     
     private JTabbedPane tpTablas;
     
     private JButton btnNuevo_Cliente;
     private JButton btnRegistrar;
-    private JButton btnAgregar_p_o_s;
+    private JButton btnNueva_fila;
+    
     private com.toedter.calendar.JDateChooser jdchFecha_V;
     private JLabel lblCodigo_V;
     private JLabel lblFecha_V;
