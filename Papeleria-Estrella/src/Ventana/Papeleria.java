@@ -1,107 +1,35 @@
 package Ventana;
 
+import Panels_menu_principal.Panel_Nueva_Compra;
+import Panels_menu_principal.Panel_Nueva_Venta;
+import Panels_menu_principal.Panel_Nuevos_Datos;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JApplet;
 import javax.swing.JFrame;
 import javax.swing.*;
 import javax.swing.JPanel;
-import javax.swing.table.DefaultTableModel;
 
 /*
  * @author Gijon Vazquez Elias Dominick
  */
 public class Papeleria extends JApplet implements ActionListener{
-    DecimalFormat df;
-    JFrame JF_Estadisticas;
-	
-    JPanel JP_Central;
-    JPanel JP_DatosGen;
-    JPanel JP_Datos;
-    JPanel JP_Tablas;
-    JPanel JP_Reporte; 
-    JPanel JP_Botones;
- /*   
-    JPanel JP_Titular;
-    JPanel JP_Contenido;
-    JPanel JP_Empleado;
-    JPanel JP_Cargo;
-    JPanel JP_Horas;
-    JPanel JP_Modalidad;
     
-    JPanel JP_Empleado2;
-    JPanel JP_PH;
-    JPanel JP_Bonificacion;
-    JPanel JP_SueldoNeto;
- */   
-    JLabel lbl_Titulo;
-    JLabel lbl_Empleados;
-    
-    JTextField txt_Empleados;
-    
-    DefaultListModel mo_Nomina;
-    
-    JList lst_Nomina;
-    
-    DefaultTableModel mo_Informacion;
-    DefaultTableModel mo_Calculos;
-    
-    JTable tb_Informacion;
-    JTable tb_Calculos;
-    
-    JScrollPane scrtb_Informacion;
-    JScrollPane scrtb_Calculos;
-    
-    //JScrollPane1.setViewportView(lstEstadistica);
-    
-    JButton btn_CalcularSueldo;
-    JButton btn_CalcularNomina;
-    JButton btn_Limpiar; 
-    JButton btn_Salir;
-
-    JMenuBar mb;
-    JMenu m_Principal;
-    JMenu m_Nuevo;
-    JMenu m_Consultar;
-    JMenu m_Actualizar;
-    JMenu m_Sesion;
-    
-    JMenu m_n_Dato;
-    JMenuItem m_n_Venta;
-    JMenuItem m_n_Compra;
-    
-    JMenu m_c_Datos;
-    JMenuItem m_c_Ventas;
-    JMenuItem m_c_Compras;
-    JMenuItem m_c_Inventario;
-    
-    JMenuItem m_a_Productos;
-    JMenuItem m_a_Servicios;
-    JMenu m_a_Proveedor;
-    JMenuItem m_a_Cliente;
-    
-    JMenuItem m_s_Iniciar;
-    JMenuItem m_s_Cerrar;
-    
-    JMenuItem m_nD_Productos;
-    JMenuItem m_nD_Servicios;
-    JMenuItem m_nD_Clientes;
-    JMenuItem m_nD_Proveedores;
-    
-    JMenuItem m_aP_Telefono;
-    JMenuItem m_aP_Direccion;
-    
-    int Filas, Columnas, ciclo=1;;
-    
-    public Papeleria() {
+    public Papeleria(Connection con) {
+        this.con = con;
         df=new DecimalFormat("###0.00");
         //1.Creamos el Formulario
         JF_Estadisticas = new JFrame();
-        JF_Estadisticas.setTitle("Programa 5");
+        JF_Estadisticas.setTitle("Papeleria la estrella");
         JF_Estadisticas.setSize(515, 450);
         JF_Estadisticas.setLayout(new BorderLayout());
         
@@ -112,50 +40,7 @@ public class Papeleria extends JApplet implements ActionListener{
         JP_Datos = new JPanel();
         JP_Tablas = new JPanel();
         JP_Botones = new JPanel();
-      /*  JP_Titular = new JPanel();
-        JP_Contenido = new JPanel();
-        JP_Empleado = new JPanel();
-        JP_Cargo = new JPanel();
-        JP_Horas = new JPanel();
-        JP_Modalidad = new JPanel();
-        
-        JP_Empleado2 = new JPanel();
-        JP_PH = new JPanel();
-        JP_Bonificacion = new JPanel();
-        JP_SueldoNeto = new JPanel();
-      */      
-        //3. Hacemos las Instrucciones
-        Font font = new Font("Agency FB", Font.BOLD, 36);
-        lbl_Titulo = new JLabel("EMPRESA LA BONITA",JLabel.CENTER);
-        lbl_Titulo.setFont(font);
-        lbl_Empleados = new JLabel("NUMERO DE EMPLEADOS");
-        
-        //4.Recoleccion de Datos
-        txt_Empleados = new JTextField();
-        
-        mo_Calculos = new DefaultTableModel();
-        mo_Informacion = new DefaultTableModel();
-        
-        tb_Calculos = new JTable();
-        tb_Informacion = new JTable();
-        
-        scrtb_Informacion = new JScrollPane();
-        scrtb_Calculos = new JScrollPane();
-        
-        mo_Nomina = new DefaultListModel();
-        
-        lst_Nomina = new JList();
- 
-        //5.Botones de Accion y Muestra
-        mo_Informacion.setColumnCount(0);
-        mo_Informacion.addColumn("NOMBRE");
-        mo_Informacion.addColumn("HORAS TRABAJADAS");
-        mo_Informacion.addColumn("PAGO POR HORA");
-        mo_Calculos.setColumnCount(0);
-        mo_Calculos.addColumn("SUBTOTAL");
-        mo_Calculos.addColumn("BONO");
-        mo_Calculos.addColumn("TOTAL");
-               
+        jspPanel  = new JScrollPane();
         //Menu de Opciones
         mb=new JMenuBar();
         
@@ -267,344 +152,143 @@ public class Papeleria extends JApplet implements ActionListener{
             menu3.addActionListener(this);
         mb.add(menu3);  
         */
-        
-        btn_CalcularSueldo = new JButton("Calcular Sueldos");
-        btn_CalcularNomina = new JButton("Calcular Nomina");
-        btn_Limpiar = new JButton("Limpiar");
-        btn_Salir = new JButton("Salir");
-        
-        tb_Calculos.setModel(mo_Calculos);
-        tb_Informacion.setModel(mo_Informacion);
-        
-        tb_Calculos.setEnabled(false);
-        
-        lst_Nomina.setModel(mo_Nomina);
-        
-        scrtb_Calculos.setVerticalScrollBar(scrtb_Informacion.getVerticalScrollBar());
-        
-     /* scrlst_Empleado.setViewportView(lst_Empleado);
-        scrlst_PagoXHora.setViewportView(lst_PagoXHora);
-        scrlst_Bono.setViewportView(lst_Bono);
-        scrlst_Sueldo.setViewportView(lst_Sueldo);
-     */
-        //6.Agregamos Acciones a los botones.
-        btn_CalcularSueldo.addActionListener(this);
-        btn_CalcularNomina.addActionListener(this);
-        btn_Limpiar.addActionListener(this);
-        btn_Salir.addActionListener(this);
-        
-         //7. Distribuimos
-        JF_Estadisticas.add(JP_Central,BorderLayout.CENTER);
-
-        JP_Central.setLayout(new GridLayout(3,0,0,0));
-       // JP_Central.add(JP_DatosGen);
-        JP_Central.add(JP_Tablas);
-        //JP_Central.add(scrtb_Nomina);
-        JP_Central.add(JP_Reporte);
-        
-        JP_DatosGen.setLayout(new BorderLayout());
-        JP_DatosGen.add(lbl_Titulo,BorderLayout.NORTH);
-        JP_DatosGen.add(JP_Datos,BorderLayout.CENTER);
-        
-        JP_Datos.setLayout(new BorderLayout());
-        JP_Datos.add(lbl_Empleados,BorderLayout.WEST);
-        JP_Datos.add(txt_Empleados,BorderLayout.CENTER);
-        
-        JP_Tablas.setLayout(new GridLayout(0,2,0,0));
-        JP_Tablas.add(scrtb_Informacion);
-        JP_Tablas.add(scrtb_Calculos);
-        
-        scrtb_Informacion.setViewportView(tb_Informacion);
-        scrtb_Calculos.setViewportView(tb_Calculos);
-        
-        JP_Reporte.setLayout(new GridLayout(0,1,0,0));
-        //JP_Reporte.add(mb);
-        JP_Reporte.add(lst_Nomina);
-        
-        JP_Botones.setLayout(new GridLayout(4,0,0,0));
-        JP_Botones.add(btn_CalcularSueldo);
-        JP_Botones.add(btn_CalcularNomina);
-        JP_Botones.add(btn_Limpiar);
-        JP_Botones.add(btn_Salir);
-/*        
-        JP_Listas.setLayout(new GridLayout(0,4,0,0));
-        JP_Listas.add(JP_Empleado2);
-        JP_Listas.add(JP_PH);
-        JP_Listas.add(JP_Bonificacion);
-        JP_Listas.add(JP_SueldoNeto);
-        
-        JP_Empleado2.setLayout(new BorderLayout());
-        JP_Empleado2.add(lbl_Empleado2,BorderLayout.NORTH);
-        JP_Empleado2.add(scrlst_Empleado,BorderLayout.CENTER);
-        
-        JP_PH.setLayout(new BorderLayout());
-        JP_PH.add(lbl_PH,BorderLayout.NORTH);
-        JP_PH.add(scrlst_PagoXHora,BorderLayout.CENTER);
-        
-        JP_Bonificacion.setLayout(new BorderLayout());
-        JP_Bonificacion.add(lbl_Bonificacion,BorderLayout.NORTH);
-        JP_Bonificacion.add(scrlst_Bono,BorderLayout.CENTER);
-        
-        JP_SueldoNeto.setLayout(new BorderLayout());
-        JP_SueldoNeto.add(lbl_SueldoNeto,BorderLayout.NORTH);
-        JP_SueldoNeto.add(scrlst_Sueldo,BorderLayout.CENTER);
-        
-        
-        JP_Reporte.setLayout(new BorderLayout());
-        //JP_Reporte.add(JP_Botones,BorderLayout.NORTH);
-        JP_Reporte.add(lbl_Estadisticas,BorderLayout.NORTH);
-        JP_Reporte.add(scrlst_Estadisticas,BorderLayout.CENTER);
-        
-        
-        
-        
-        JP_Datos.setLayout(new BorderLayout());
-        JP_Datos.add(JP_Titular,BorderLayout.NORTH);
-        JP_Datos.add(JP_Contenido,BorderLayout.CENTER);
-        JP_Datos.add(JP_Botones,BorderLayout.SOUTH);
-        
-        JP_Titular.setLayout(new GridLayout(0,1,0,0));
-        JP_Titular.add(lbl_Titulo);
-        
-        JP_Contenido.setLayout(new GridLayout(0,2,0,0));
-        JP_Contenido.add(JP_Empleado);
-        JP_Contenido.add(JP_Horas);
-        JP_Contenido.add(JP_Cargo);
-        JP_Contenido.add(JP_Modalidad);
-        
-        JP_Empleado.setLayout(new BorderLayout());
-        JP_Empleado.add(lbl_Empleado,BorderLayout.NORTH);
-        JP_Empleado.add(txt_Empleado,BorderLayout.CENTER);
-        
-        JP_Horas.setLayout(new BorderLayout());
-        JP_Horas.add(lbl_Horas,BorderLayout.NORTH);
-        JP_Horas.add(txt_Horas,BorderLayout.CENTER);
-        
-        JP_Cargo.setLayout(new BorderLayout());
-        JP_Cargo.add(lbl_Cargo,BorderLayout.NORTH);
-        JP_Cargo.add(cbo_Cargo,BorderLayout.CENTER);
-    
-        JP_Modalidad.setLayout(new BorderLayout());
-        JP_Modalidad.add(lbl_Modalidad,BorderLayout.NORTH);
-        JP_Modalidad.add(cbo_Modalidad,BorderLayout.CENTER);
-  */      
-        //8. Mostramos interfaz
+   //8. Mostramos interfaz
         JF_Estadisticas.setJMenuBar(mb);
         JF_Estadisticas.setLocationRelativeTo(null);
         JF_Estadisticas.setVisible(true);
+        JF_Estadisticas.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     }
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource()==m_nD_Servicios){
-            JF_Estadisticas.remove(JP_Central);
-            //JP_Central.removeAll();
-            JF_Estadisticas.add(JP_DatosGen,BorderLayout.CENTER);
-            JF_Estadisticas.repaint();
-            JF_Estadisticas.validate();
-            //JOptionPane.showMessageDialog(null,"xd","",JOptionPane.PLAIN_MESSAGE);
+        if (e.getSource() == m_n_Venta){
+            Panel_Nueva_Venta panel = new Panel_Nueva_Venta(con);
+            llamarPanel(panel);
         }
-/*        if(e.getSource()==mi1){
-            double Total=0,Bonificacion=0,Bono=0;
-            boolean Iniciar;
-            Iniciar=ValidacionEmpleados();
-            if(Iniciar==true){  
-                int Empleados=Empleados();
-                Filas = Filas();
-                Columnas = Columnas();
-                mo_Informacion.setRowCount(Empleados);
-                mo_Calculos.setRowCount(Empleados);
-                
-                if(ciclo==1){
-                    ciclo++;
-                }
-                else{
-                    if(ciclo>1){
-                        boolean Proceso = ValidacionTabla();
-                        if(Proceso==true){
-                            for(int x=0;x<Filas;x++){
-                                int Horas;
-                                double PagoPorHora, Subtotal;
-                                Horas= Integer.parseInt(mo_Informacion.getValueAt(x,1).toString());
-                                PagoPorHora = Double.parseDouble(mo_Informacion.getValueAt(x,2).toString());
-                                Subtotal = Horas*PagoPorHora;
-                                Bonificacion = Bonificacion(Subtotal);
-                                Bono=Subtotal*Bonificacion;
-                                Total=Subtotal+Bono;
-                                
-                                mo_Calculos.setValueAt(df.format(Subtotal),x,0);
-                                mo_Calculos.setValueAt(df.format(Bono),x,1);
-                                mo_Calculos.setValueAt(df.format(Total),x,2);
-                                ciclo++;
-                            }
-                        }
+        if (e.getSource() == m_n_Compra){
+            Panel_Nueva_Compra panel = new Panel_Nueva_Compra();
+            llamarPanel(panel);
+        }
+        if (e.getSource() == m_nD_Servicios){
+            Panel_Nueva_Compra panel = new Panel_Nueva_Compra();
+            llamarPanel(panel);
+        }
+        if(e.getSource() == m_nD_Productos){
+            //Permitir guardar el panel (future feature)
+            Panel_Nuevos_Datos panel = new Panel_Nuevos_Datos("Nuevo_Producto", con); 
+            llamarPanel(panel.pPrincipal);
+        }
+        if (e.getSource() == m_nD_Servicios){
+            Panel_Nuevos_Datos panel = new Panel_Nuevos_Datos("Nuevo_Servicio", con);
+            llamarPanel(panel.pPrincipal);
+        }
+        if (e.getSource() == m_nD_Clientes){
+            Panel_Nuevos_Datos panel = new Panel_Nuevos_Datos("Nuevo_Cliente", con);
+            llamarPanel(panel.pPrincipal);
+        }
+        if (e.getSource() == m_nD_Proveedores){
+            Panel_Nuevos_Datos panel = new Panel_Nuevos_Datos("Nuevo_Proveedor", con);
+            llamarPanel(panel.pPrincipal);
+        }
+        if (e.getSource() == m_s_Cerrar){
+            try {
+                //Cerrar conexion a base de datos
+                //Agregar JOptionPane para confirmar cerrar conexion
+                con.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            JF_Estadisticas.dispose();            
+        }
+    }   
+    
+    private void llamarPanel(final JPanel panel){
+         /* Set the Nimbus look and feel */
+            //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+            /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+             * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+             */
+            try {
+                for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                    if ("Nimbus".equals(info.getName())) {
+                        javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                        break;
                     }
                 }
+            } catch (ClassNotFoundException ex) {
+                java.util.logging.Logger.getLogger(Papeleria.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (InstantiationException ex) {
+                java.util.logging.Logger.getLogger(Papeleria.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                java.util.logging.Logger.getLogger(Papeleria.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+                java.util.logging.Logger.getLogger(Papeleria.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
-           // else{btn_Limpiar.doClick();}
-           
-            /*    Monto=PagoPorHora();
-                Horas=HorasTrabajadas();
-                Bonificacion=IdentificarBonificacion();
-                
-                MontoNeto=TotalPagar(Monto,Horas,Bonificacion);
-                
-                ContadorCargos();
-                ContadorSueldo(MontoNeto);
-                
-                mo_Empleado.addElement(txt_Empleado.getText());
-                mo_pagoXhora.addElement(Monto);
-                mo_Bono.addElement((Horas*Monto)*Bonificacion);
-                mo_Sueldo.addElement(MontoNeto);
-                
-                Total++;
-            /*  txt_Reporte.append("Medios de Publicidad: "+(String)cbo_Medios.getSelectedItem());
-                txt_Reporte.append("\nPrecio: $"+df.format(Costo));
-                txt_Reporte.append("\n---------------------------------------");
-                txt_Reporte.append("\nMonto Bruto: $"+df.format(MontoBruto));
-                txt_Reporte.append("\nMonto de Descuento: $"+df.format(Descuento));
-                txt_Reporte.append("\nMonto Neto: $"+df.format(MontoNeto));
-                txt_Reporte.append("\n\nPrograma realizado por Elias Gijon");
-                */
-            
-        }
-/*        if(e.getSource()==mi2){
-            if(ciclo>2){
-                mo_Nomina.clear();
-                mo_Nomina.addElement("-----------------------------------");
-                mo_Nomina.addElement("NOMINA");
-                mo_Nomina.addElement("-----------------------------------");
-                mo_Nomina.addElement("El Total de Pago Basico: "+df.format(TotalSueldoBasico()));
-                mo_Nomina.addElement("El Total de Bonificacion: "+df.format(TotalBonos()));
-                mo_Nomina.addElement("El Total: "+df.format(Total()));
-                mo_Nomina.addElement("-----------------------------------");
-            }
-            else{
-                JOptionPane.showMessageDialog(null,"Se debe de iniciar la informacion primero","Ejecucion sin datos",JOptionPane.WARNING_MESSAGE);
-            }
-        }
-        if(e.getSource()==menu2){
-            if((txt_Empleados.getText()).equals("")){
-                JOptionPane.showMessageDialog(null,"Los Campos estan limpios","Error en Ejecucion",JOptionPane.WARNING_MESSAGE);
-            }
-            else{
-                for(int x=(Filas-1);x>=0;x--){
-                    mo_Informacion.removeRow(x);
-                    mo_Calculos.removeRow(x);
+            //</editor-fold>
+            //</editor-fold>
+
+            /* Create and display the form */
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    JF_Estadisticas.remove(jspPanel);
+                    
+                    JP_Central = panel;
+                    jspPanel.setViewportView(panel);
+                    JF_Estadisticas.add(jspPanel, BorderLayout.CENTER);
+                    JF_Estadisticas.repaint();
+                    JF_Estadisticas.validate();
                 }
-            }
-            Filas=0;
-            txt_Empleados.setText("");
-            mo_Nomina.removeAllElements();
-            ciclo=1;
-            txt_Empleados.requestFocus();
-        }
-        if(e.getSource()==menu3){
-            System.exit(0);
-        }
-    }
-*/    
-    public boolean ValidacionEmpleados(){
-        boolean TB=true;
-        try{
-            Empleados();
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null,"Se debe Ingresar un valor numerico en Empleados","Error en Empleados",JOptionPane.WARNING_MESSAGE);  
-            TB=false;
-        }
-        
-        return TB;
+            }); 
     }
     
-     public boolean ValidacionTabla(){
-        boolean TB=true;
-        for(int x=0;x<Filas;x++){
-            try{
-                (mo_Informacion.getValueAt(x,0)).toString();
-            }
-            catch(Exception e){
-                JOptionPane.showMessageDialog(null,"Se debe Ingresar un Nombre de Empleado","Error al llenar la Tabla",JOptionPane.WARNING_MESSAGE);
-                TB=false;
-            }    
-            
-            try{
-                Integer.parseInt(mo_Informacion.getValueAt(x,1).toString());
-            }
-            catch(Exception e){
-                JOptionPane.showMessageDialog(null,"Se debe Ingresar un valor numerico en Horas","Error al llenar la Tabla",JOptionPane.WARNING_MESSAGE);
-                TB=false;
-            }
-            
-            try{
-                Double.parseDouble(mo_Informacion.getValueAt(x,2).toString());
-            }
-            catch(Exception e){
-                JOptionPane.showMessageDialog(null,"Se debe Ingresar un valor numerico en Pago por Horas","Error al llenar la Tabla",JOptionPane.WARNING_MESSAGE);
-                TB=false;
-            }
-        }
-        return TB;
-    }
- 
-    public int Empleados(){
-        int Empleados;
-        Empleados=Integer.parseInt(String.valueOf(txt_Empleados.getText()));
-        return Empleados;
-    }
+    private Connection con;
     
-    public int Columnas(){
-        return Integer.parseInt(String.valueOf(mo_Informacion.getColumnCount()));
-    }
+    private DecimalFormat df;
+    private JFrame JF_Estadisticas;
+	
+    private JPanel JP_Central;
+    private JPanel JP_DatosGen;
+    private JPanel JP_Datos;
+    private JPanel JP_Tablas;
+    private JPanel JP_Reporte; 
+    private JPanel JP_Botones;
     
-    public int Filas(){
-        return Empleados();
-    }
-        
-    public double Bonificacion(double Sueldo){
-        double Bonificacion=0;
-        if (Sueldo<5000){
-            Bonificacion=0.2;
-        }
-        else {
-            if((Sueldo>=5001)&&(Sueldo<7000)){
-                Bonificacion=0.1;
-            }
-            else{
-                if(Sueldo>7000){
-                    Bonificacion=0.05;
-                }
-            }
-        }
-        return Bonificacion;
-    }
+    //JScrollPane1.setViewportView(lstEstadistica);
+
+    private JMenuBar mb;
+    private JMenu m_Principal;
+    private JMenu m_Nuevo;
+    private JMenu m_Consultar;
+    private JMenu m_Actualizar;
+    private JMenu m_Sesion;
     
-    public double TotalSueldoBasico(){
-        double TotalSueldoBasico=0;
-        for(int x=0;x<Filas;x++){
-            double Subtotal = Double.parseDouble(mo_Calculos.getValueAt(x,0).toString());
-            TotalSueldoBasico+=Subtotal;
-        }
-        return TotalSueldoBasico;
-    }
+    private JMenu m_n_Dato;
+    private JMenuItem m_n_Venta;
+    private JMenuItem m_n_Compra;
     
-    public double TotalBonos(){
-        double TotalBonos=0;
-        for(int x=0;x<Filas;x++){
-            double Bono = Double.parseDouble(mo_Calculos.getValueAt(x,1).toString());
-            TotalBonos += Bono;
-        }
-        return TotalBonos;
-    }
-    public double Total(){
-        double Total=0;
-        for(int x=0;x<Filas;x++){
-            double total = Double.parseDouble(mo_Calculos.getValueAt(x,2).toString());
-            Total+=total;
-        }
-        return Total;
-    }
+    private JMenu m_c_Datos;
+    private JMenuItem m_c_Ventas;
+    private JMenuItem m_c_Compras;
+    private JMenuItem m_c_Inventario;
     
-    public static void main(String[]args){
-        Papeleria AS=new Papeleria();
-    }
+    private JMenuItem m_a_Productos;
+    private JMenuItem m_a_Servicios;
+    private JMenu m_a_Proveedor;
+    private JMenuItem m_a_Cliente;
+    
+    private JMenuItem m_s_Iniciar;
+    private JMenuItem m_s_Cerrar;
+    
+    private JMenuItem m_nD_Productos;
+    private JMenuItem m_nD_Servicios;
+    private JMenuItem m_nD_Clientes;
+    private JMenuItem m_nD_Proveedores;
+    
+    private JMenuItem m_aP_Telefono;
+    private JMenuItem m_aP_Direccion;
+    
+    private JScrollPane jspPanel;
+    
+    private int Filas, Columnas, ciclo=1;;
 }

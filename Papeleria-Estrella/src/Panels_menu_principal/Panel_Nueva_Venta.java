@@ -4,8 +4,7 @@
  * and open the template in the editor.
  */    
 package Panels_menu_principal;
-       
-import Ventana.Nuevo_Dato;
+
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -14,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -29,11 +29,16 @@ import javax.swing.JTextField;
 public class Panel_Nueva_Venta extends JPanel{
     
     //Talves se necesite parametro Connection
-    public Panel_Nueva_Venta (){
+    public Panel_Nueva_Venta (Connection con){
+        this.con = con;
         initComponents();
     }
     
     private void initComponents(){
+        final String [] vector_Producto_Venta = {null,null,null,null};
+        final String [] vector_Servicio_Venta = {null,null,null,null,null};
+        final byte nTabs = 2;
+        
         pTablaP_Y_S = new JPanel();
         pCentro = new JPanel();
         pDatos_Venta = new JPanel();
@@ -41,6 +46,7 @@ public class Panel_Nueva_Venta extends JPanel{
         pNumero_Cl = new JPanel();
         pTotal_V = new JPanel();
         pBotones = new JPanel();
+        pTabbedPane = new ArrayList<JPanel>();
         
         tProductos_Venta = new JTable();
         tServicios_Venta = new JTable();      
@@ -51,13 +57,14 @@ public class Panel_Nueva_Venta extends JPanel{
         
         btnNuevo_Cliente = new JButton();
         btnRegistrar = new JButton();
-        btnNueva_fila = new JButton();
+        btnNueva_fila = new ArrayList<JButton>();
         jdchFecha_V = new com.toedter.calendar.JDateChooser();
         lblCodigo_V = new JLabel();
         lblFecha_V = new JLabel();
         lblNumero_Cl = new JLabel();
         lblTotal_V = new JLabel();
         lblTitulo = new JLabel();
+        
         //    private JLabel lblTitulo;
         txtCodigo_V = new JTextField();
         txtNumero_Cl = new JTextField();
@@ -80,7 +87,7 @@ public class Panel_Nueva_Venta extends JPanel{
         //JTable's
         tProductos_Venta.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
-                    {null, null, null, null},
+                    vector_Producto_Venta
                 },
                 new String [] {
                     "Codigo_P", "Cantidad", "Precio", "Total"
@@ -92,7 +99,7 @@ public class Panel_Nueva_Venta extends JPanel{
             
         tServicios_Venta.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
-                    {null, null, null, null, null},
+                    vector_Servicio_Venta
                 },
                 new String [] {
                     "Nombre_S", "Codigo_S", "Cantidad", "Precio", "Total"
@@ -100,35 +107,17 @@ public class Panel_Nueva_Venta extends JPanel{
             ));
             //En base al nombre del producto se busca el codigo en la base de datos
 
-            sptServicios.setViewportView(tServicios_Venta);    
-        
-        //JTabbedPane
-        tpTablas.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-        tpTablas.setFocusable(false);
-	tpTablas.setRequestFocusEnabled(false);    
-        
-        tpTablas.addTab("Productos vendidos",sptProductos);
-        tpTablas.addTab("Servicios vendidos", sptServicios);
+            sptServicios.setViewportView(tServicios_Venta);  
             
         //JButton's
-        btnNueva_fila.setText("Nueva fila");
-        btnNueva_fila.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                try{
-                   btnAgregar_p_o_sActionPerformed(evt);
-                }
-                catch(Exception e){
-                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-                }
-            }
-        });
+        botonesNueva_Fila(vector_Producto_Venta, vector_Servicio_Venta, nTabs);
+        
         
         btnNuevo_Cliente.setText("Nuevo cliente");
         btnNuevo_Cliente.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNuevo_ClienteActionPerformed(evt);
+                btnNuevo_ClienteActionPerformed(evt, con);
             }
         });
         
@@ -139,9 +128,20 @@ public class Panel_Nueva_Venta extends JPanel{
                 btnRegistrarActionPerformed(evt);
             
             }
-        });
-            
+        });    
+        
+        
+        
+        //JTabbedPane
+        tpTablas.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+        tpTablas.setFocusable(false);
+	tpTablas.setRequestFocusEnabled(false);    
+        
+        
+                      
         //JPanel's
+        panelesTabbedPane(nTabs);
+        
         /*Contenido Panel_Nueva_Venta*/
         setLayout(new BorderLayout());
         
@@ -188,8 +188,7 @@ public class Panel_Nueva_Venta extends JPanel{
         pCentro.add(pBotones, BorderLayout.SOUTH);
         
         /*Contenido pBotones*/
-        pBotones.setLayout(new GridLayout(1, 3));
-        pBotones.add(btnNueva_fila);
+        pBotones.setLayout(new GridLayout(1, 2));
         pBotones.add(btnNuevo_Cliente);
         pBotones.add(btnRegistrar);
     }
@@ -240,9 +239,69 @@ public class Panel_Nueva_Venta extends JPanel{
         return fecha;
     }
     
-    private void btnAgregar_p_o_sActionPerformed(java.awt.event.ActionEvent evt) {                                                  
+    private void botonesNueva_Fila (final String[] vector_Producto_Venta, final String[] vector_Servicio_Venta, byte nTabs){    
+        for (int i = 0; i < nTabs; i++) {
+            JButton btn = new JButton();
+            
+            btnNueva_fila.add(btn);
+            btnNueva_fila.get(i).setText("+");
+            final int indice = i;
+            btnNueva_fila.get(i).addActionListener(new java.awt.event.ActionListener() {
+                @Override           
+                public void actionPerformed(ActionEvent evt) {
+                    
+                    try{
+                        javax.swing.table.DefaultTableModel tmTabla = new javax.swing.table.DefaultTableModel();
+                        String[] vector = null;
+                        
+                        if (indice == 0){//Producto_Venta
+                            tmTabla = (javax.swing.table.DefaultTableModel)tProductos_Venta.getModel();
+                            vector = vector_Producto_Venta;
+                        }
+                        else{//Servicio_Venta
+                            if (indice == 1){
+                                tmTabla = (javax.swing.table.DefaultTableModel)tServicios_Venta.getModel();
+                                vector = vector_Servicio_Venta;
+                            }
+                        }
+
+                        btnNueva_FilaActionPerformed(evt, tmTabla, vector);
+                    }
+                    catch(Exception e){
+                        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                    }
+                }
+            });
+        }     
+    }
+    
+    private void panelesTabbedPane (byte nTabs){
+        for (int i = 0; i < nTabs; i++) {
+            JPanel panel = new JPanel();
+            pTabbedPane.add(panel);
+            pTabbedPane.get(i).setLayout(new BorderLayout());
+            
+            if (i == 0){
+                pTabbedPane.get(i).add(sptProductos, BorderLayout.CENTER);
+                pTabbedPane.get(i).add(btnNueva_fila.get(i), BorderLayout.SOUTH);
+                tpTablas.addTab("Productos vendidos", pTabbedPane.get(i));
+            }
+            else{
+                if (i == 1){
+                    pTabbedPane.get(i).add(sptServicios, BorderLayout.CENTER);
+                    pTabbedPane.get(i).add(btnNueva_fila.get(i), BorderLayout.SOUTH);
+                    tpTablas.addTab("Servicios vendidos", pTabbedPane.get(i));
+                }
+            }
+        }
+    
+    }
+    
+    //Listeners
+    private void btnNueva_FilaActionPerformed(java.awt.event.ActionEvent evt, javax.swing.table.DefaultTableModel dtmTabla, String[] vector) {                                                  
         // TODO add your handling code here:
         //Se abre ventana para agregar productos o servicios para venta
+        dtmTabla.addRow(vector);
     }                                                 
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {                                             
@@ -250,14 +309,23 @@ public class Panel_Nueva_Venta extends JPanel{
         //Se registra todo en las tablas de las bases de datos
     }                                            
 
-    private void btnNuevo_ClienteActionPerformed(java.awt.event.ActionEvent evt) {                                                 
+    private void btnNuevo_ClienteActionPerformed(java.awt.event.ActionEvent evt, Connection con) {                                                 
         // TODO add your handling code here:
         //Se abre panel pNuevo_Cliente
-        Nuevo_Dato ventana = new Nuevo_Dato("Nuevo_Cliente");
+        Panel_Nuevos_Datos panel = new Panel_Nuevos_Datos("Nuevo_Cliente", con);
+        
+        javax.swing.JFrame ventana = new javax.swing.JFrame();
+        
+        ventana.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        ventana.add(panel.pPrincipal);
+        ventana.setLocationRelativeTo(null);
+        ventana.pack();
         ventana.setVisible(true);
     }              
     
     // Variables declaration - do not modify  
+    private Connection con;
+    
     private JPanel pCentro;
     private JPanel pBotones;
     
@@ -266,6 +334,7 @@ public class Panel_Nueva_Venta extends JPanel{
     private JPanel pCodigo_V;
     private JPanel pNumero_Cl;
     private JPanel pTotal_V;
+    private ArrayList<JPanel> pTabbedPane;
                        
     private JTable tProductos_Venta;
     private JTable tServicios_Venta;
@@ -276,7 +345,7 @@ public class Panel_Nueva_Venta extends JPanel{
     
     private JButton btnNuevo_Cliente;
     private JButton btnRegistrar;
-    private JButton btnNueva_fila;
+    private ArrayList<JButton> btnNueva_fila;
     
     private com.toedter.calendar.JDateChooser jdchFecha_V;
     private JLabel lblCodigo_V;
