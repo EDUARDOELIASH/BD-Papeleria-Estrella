@@ -86,18 +86,14 @@ public class Panel_Nuevos_Datos{
             @Override
             public void actionPerformed(ActionEvent e) {
                 for (int i = 0; i < nFilas; i++) {
-                        for (int j = 0; j < 3; j++) {
-                            System.out.println(dtmTable.getValueAt(i, j));
-                    }
-                        String sql = "INSERT INTO producto VALUES('"+ dtmTable.getValueAt(i, 0)+"','"+ dtmTable.getValueAt(i, 1)+"',"+ 0 +","+dtmTable.getValueAt(i, 2)+")";
-                        //Verificar datos de tabla
+                    String sql = "INSERT INTO producto VALUES('"+ dtmTable.getValueAt(i, 0)+"','"+ dtmTable.getValueAt(i, 1)+"',"+ 0 +","+dtmTable.getValueAt(i, 2)+")";
+                    //Verificar datos de tabla
 
-                        try {
-                            btnRegistrarActionPerformed(e, con, sql);
-                        } catch (SQLException ex) {
-                            Logger.getLogger(Panel_Nuevos_Datos.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    
+                    try {
+                        btnRegistrarActionPerformed(e, con, sql);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Panel_Nuevos_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                    }               
                 }
                 
             }
@@ -170,11 +166,15 @@ public class Panel_Nuevos_Datos{
         btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String sql="";
-                try {
-                    btnRegistrarActionPerformed(e, con, sql);
-                } catch (SQLException ex) {
-                    Logger.getLogger(Panel_Nuevos_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                for (int i = 0; i < nFilas; i++) {
+                    String sql = "INSERT INTO servicio VALUES('"+ dtmTable.getValueAt(i, 0)+"','"+ dtmTable.getValueAt(i, 1)+"',"+dtmTable.getValueAt(i, 2)+")";
+                    //Verificar datos de tabla
+
+                    try {
+                        btnRegistrarActionPerformed(e, con, sql);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Panel_Nuevos_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                    }               
                 }
             }
         });
@@ -246,12 +246,15 @@ public class Panel_Nuevos_Datos{
         btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String sql = "";
-                
-                try {
-                    btnRegistrarActionPerformed(e, con, sql);
-                } catch (SQLException ex) {
-                    Logger.getLogger(Panel_Nuevos_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                for (int i = 0; i < nFilas; i++) {
+                    String sql = "INSERT INTO cliente(Nombre_Cl, Telefono_Cl) VALUES('"+ dtmTable.getValueAt(i, 1)+"','"+dtmTable.getValueAt(i, 2)+"')";
+                    //Verificar datos de tabla
+
+                    try {
+                        btnRegistrarActionPerformed(e, con, sql);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Panel_Nuevos_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                    }               
                 }
             }
         });
@@ -323,11 +326,15 @@ public class Panel_Nuevos_Datos{
         btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String sql = "";
-                try {
-                    btnRegistrarActionPerformed(e, con, sql);
-                } catch (SQLException ex) {
-                    Logger.getLogger(Panel_Nuevos_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                for (int i = 0; i < nFilas; i++) {
+                    String sql = "INSERT INTO proveedor VALUES('"+ dtmTable.getValueAt(i, 0)+"','"+ dtmTable.getValueAt(i, 1)+"','"+dtmTable.getValueAt(i, 2)+"')";
+                    //Verificar datos de tabla
+
+                    try {
+                        btnRegistrarActionPerformed(e, con, sql);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Panel_Nuevos_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                    }               
                 }
             }
         });
@@ -367,9 +374,7 @@ public class Panel_Nuevos_Datos{
     
     private void btnRegistrarActionPerformed (java.awt.event.ActionEvent evt, Connection con, String sql) throws SQLException{
         try (Statement statement = con.createStatement()) {
-            statement.executeQuery(sql);
-            
-            
+            statement.executeUpdate(sql);   
         }
     }
     
