@@ -1,6 +1,7 @@
 package papeleria_estrella;
 
 import Ventana.Inicio_sesion;
+import Ventana.Login;
 import Ventana.Papeleria;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -21,10 +22,9 @@ import javax.swing.JOptionPane;
 
 public class Main {
     public static void main(String[] args) throws SQLException{
-        Inicio_sesion sesion = new Inicio_sesion();
-        sesion.setLocationRelativeTo(null);
-        sesion.setVisible(true);
-       
-        
+        //Inicio_sesion sesion = new Inicio_sesion();
+        Login sesion = new Login();
+        //sesion.setLocationRelativeTo(null);
+        //sesion.setVisible(true);
     } 
 }
