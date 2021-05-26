@@ -121,9 +121,10 @@ public class Inicio_sesion extends javax.swing.JFrame {
         if (con!=null){
             JOptionPane.showMessageDialog(null, "Conexion exitosa"); 
             dispose();
+            Papeleria ventana = new Papeleria(con);
         }
         
-        Papeleria ventana = new Papeleria(con);
+        
     }//GEN-LAST:event_btnIniciar_sesionActionPerformed
 
     /**
