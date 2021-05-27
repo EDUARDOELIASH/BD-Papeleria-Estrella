@@ -15,8 +15,11 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -29,12 +32,12 @@ import javax.swing.JTextField;
 public class Panel_Nueva_Venta extends JPanel{
     
     //Talves se necesite parametro Connection
-    public Panel_Nueva_Venta (Connection con){
+    public Panel_Nueva_Venta (Connection con, JMenuItem menuItem){
         this.con = con;
-        initComponents();
+        initComponents(menuItem);
     }
     
-    private void initComponents(){
+    private void initComponents(final JMenuItem menuItem){
         final String [] vector_Producto_Venta = {null,null,null,null};
         final String [] vector_Servicio_Venta = {null,null,null,null,null};
         final byte nTabs = 2;
@@ -117,7 +120,11 @@ public class Panel_Nueva_Venta extends JPanel{
         btnNuevo_Cliente.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNuevo_ClienteActionPerformed(evt, con);
+                try {
+                    btnNuevo_ClienteActionPerformed(evt, con, menuItem);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Panel_Nueva_Venta.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         
@@ -309,15 +316,15 @@ public class Panel_Nueva_Venta extends JPanel{
         //Se registra todo en las tablas de las bases de datos
     }                                            
 
-    private void btnNuevo_ClienteActionPerformed(java.awt.event.ActionEvent evt, Connection con) {                                                 
+    private void btnNuevo_ClienteActionPerformed(java.awt.event.ActionEvent evt, Connection con, JMenuItem menuItem) throws SQLException {                                                 
         // TODO add your handling code here:
         //Se abre panel pNuevo_Cliente
-        Panel_Nuevos_Datos panel = new Panel_Nuevos_Datos("Nuevo_Cliente", con);
+        Panel_Nuevos_Datos panel = new Panel_Nuevos_Datos("Nuevo_Cliente", con, menuItem);
         
         javax.swing.JFrame ventana = new javax.swing.JFrame();
         
         ventana.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        ventana.add(panel.pPrincipal);
+        //ventana.add(panel.pPrincipal);
         ventana.setLocationRelativeTo(null);
         ventana.pack();
         ventana.setVisible(true);
