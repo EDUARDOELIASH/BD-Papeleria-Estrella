@@ -78,12 +78,13 @@ public class Panel_Nuevos_Datos{
                 "Codigo_P", "Nombre_P", "Precio_P"
             }
         );
+         
         
         final DefaultTableModel dtmTable = newModelo;
         
         //JTable
         tTabla.setModel(dtmTable);
-
+        tTabla.setFocusable(false); 
         jScrollPane1.setViewportView(tTabla);
  
 
@@ -165,6 +166,7 @@ public class Panel_Nuevos_Datos{
                 "Codigo_S", "Nombre_S", "Precio_S"
             }
         ));
+        tTabla.setFocusable(false);
 
         jScrollPane1.setViewportView(tTabla);
         
@@ -185,14 +187,7 @@ public class Panel_Nuevos_Datos{
                     }               
                 }
                 JOptionPane.showMessageDialog(null, "Registro de servicios exitoso");
-                tTabla.setModel(new javax.swing.table.DefaultTableModel(
-                    new Object [][] {
-                        vector
-                    },
-                    new String [] {
-                        "Codigo_S", "Nombre_S", "Precio_S"
-                    }
-                ));
+                menuItem.doClick();
             }
         });
 
@@ -261,14 +256,15 @@ public class Panel_Nuevos_Datos{
                 return editable[column];
             }
         });
-
+        tTabla.setFocusable(false);
+        
         jScrollPane1.setViewportView(tTabla);
         
         final javax.swing.table.DefaultTableModel dtmTabla = (DefaultTableModel) tTabla.getModel();
         final int Numero_Cl = consultarU_Numero_Cl(con);
         dtmTabla.setValueAt(Numero_Cl, nFilas-1, 0);
         
-        tTabla.setFocusable(false);
+        
         
         //Botones
         btnRegistrar.setText("Registrar");
@@ -287,20 +283,7 @@ public class Panel_Nuevos_Datos{
                     }
                 }
                 JOptionPane.showMessageDialog(null, "Registro de clientes exitoso");
-                //JTable
-                tTabla.setModel(new javax.swing.table.DefaultTableModel(
-                    new Object [][] {
-                        {null, null, null},
-                    },
-                    new String [] {
-                        "Numero_Cl", "Nombre_Cl", "Telefono_Cl"
-                    }
-                ){
-                    @Override
-                    public boolean isCellEditable(int row, int column){
-                        return editable[column];
-                    }
-                });
+                menuItem.doClick();
             }
         });
 
@@ -364,6 +347,7 @@ public class Panel_Nuevos_Datos{
                 "Codigo_Pro", "Nombre_Pro", "No_Telefono_Pro", "Direccion_Pro"
             }
         ));
+        tTabla.setFocusable(false);
 
         jScrollPane1.setViewportView(tTabla);
         
@@ -383,18 +367,9 @@ public class Panel_Nuevos_Datos{
                     }
                 }
                 JOptionPane.showMessageDialog(null, "Registro de proveedores exitoso");
-                tTabla.setModel(new javax.swing.table.DefaultTableModel(
-                    new Object [][] {
-                        vector
-                    },
-                    new String [] {
-                        "Codigo_Pro", "Nombre_Pro", "No_Telefono_Pro", "Direccion_Pro"
-                    }
-                ));
+                menuItem.doClick();
             }
-            
         });
-
 
         btnNuevaFila.setText("Nueva Fila");
         btnNuevaFila.addActionListener(new java.awt.event.ActionListener() {
@@ -445,18 +420,14 @@ public class Panel_Nuevos_Datos{
         nFilas ++;
     }
     
+    //Validar datos
     private void btnRegistrarActionPerformed (Connection con, String sql) throws SQLException{
         try (Statement statement = con.createStatement()) {
             statement.executeUpdate(sql);   
         }
         
         
-    }
-    
-    private void newDTModel (DefaultTableModel modelo, DefaultTableModel newModelo){
-        modelo = newModelo;
-    }
-    
+    }   
     
     // Variables declaration - do not modify
     private Connection con;
