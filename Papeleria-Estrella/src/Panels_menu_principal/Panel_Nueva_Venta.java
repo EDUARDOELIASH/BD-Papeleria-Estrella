@@ -334,9 +334,17 @@ public class Panel_Nueva_Venta extends JPanel{
         String sql = "SELECT Codigo_P, NOMBRE_P, Precio_P FROM producto";
         int[] numeroFilas = {0};
         
-        ResultSet rs = consultar(sql);
+        ResultSet rs = consultar(sql, numeroFilas, "producto");
         
-        
+        for (int i = 0; i < numeroFilas[0]; i++) {
+            try {
+                if (rs.next()){
+                    cb.addItem(rs.getString("Codigo_P")+rs.getString("NOMBRE_P"));
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Panel_Nueva_Venta.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         
         columna.setCellEditor(new DefaultCellEditor(cb));
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
@@ -345,18 +353,27 @@ public class Panel_Nueva_Venta extends JPanel{
     }
     
     private ResultSet consultar (String sql, int[] nFilas, String tabla){
-        ResultSet rs = null;
-        Statement st;
         
-        try {
-            st = con.createStatement();
-            rs = st.executeQuery(sql);
-        } catch (SQLException ex) {
-            Logger.getLogger(Panel_Nueva_Venta.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        sql = "SELECT COUNT(Codigo_P) FROM "+tabla+"";
-        
+            ResultSet rs = null;
+            Statement st = null;
+            
+            try {
+                st = con.createStatement();
+                rs = st.executeQuery(sql);
+            } catch (SQLException ex) {
+                Logger.getLogger(Panel_Nueva_Venta.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            sql = "SELECT COUNT(*) as filas FROM "+tabla+"";
+            
+            try{
+                ResultSet rs1 = st.executeQuery(sql);
+                if (rs1.next()) {
+                    nFilas[0] = rs.getInt("filas");
+                }         
+            } catch (SQLException ex) {
+                Logger.getLogger(Panel_Nueva_Venta.class.getName()).log(Level.SEVERE, null, ex);
+            }
         
         return rs;
     }
@@ -364,7 +381,7 @@ public class Panel_Nueva_Venta extends JPanel{
     //Listeners
     private void btnNueva_FilaActionPerformed(javax.swing.table.DefaultTableModel dtmTabla, String[] vector, int[] nFilas, int i) {                                                  
         // TODO add your handling code here:
-        //Se abre ventana para agregar productos o servicios para venta
+        //Se abre ventana para agregar producto o servicio para venta
         
         dtmTabla.addRow(vector);
         nFilas[i]++;
