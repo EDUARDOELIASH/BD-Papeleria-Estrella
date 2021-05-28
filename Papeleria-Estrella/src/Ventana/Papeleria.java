@@ -162,8 +162,12 @@ public class Papeleria extends JApplet implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == m_n_Venta){
-            Panel_Nueva_Venta panel = new Panel_Nueva_Venta(con, m_nD_Clientes);
-            llamarPanel(panel);
+            try {
+                Panel_Nueva_Venta panel = new Panel_Nueva_Venta(con, m_nD_Clientes);
+                llamarPanel(panel);
+            } catch (SQLException ex) {
+                Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         if (e.getSource() == m_n_Compra){
             Panel_Nueva_Compra panel = new Panel_Nueva_Compra();

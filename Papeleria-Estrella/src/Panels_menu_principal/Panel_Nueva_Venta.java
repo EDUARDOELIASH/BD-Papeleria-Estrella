@@ -331,6 +331,12 @@ public class Panel_Nueva_Venta extends JPanel{
     
     private void setBox (JTable tabla, TableColumn columna, String nombreT){
         JComboBox cb = new JComboBox();
+        String sql = "SELECT Codigo_P, NOMBRE_P, Precio_P FROM producto";
+        int[] numeroFilas = {0};
+        
+        ResultSet rs = consultar(sql);
+        
+        
         
         columna.setCellEditor(new DefaultCellEditor(cb));
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
@@ -338,8 +344,21 @@ public class Panel_Nueva_Venta extends JPanel{
         columna.setCellRenderer(renderer);
     }
     
-    private void consultarCod_Nom_Y_Precio (){
-    
+    private ResultSet consultar (String sql, int[] nFilas, String tabla){
+        ResultSet rs = null;
+        Statement st;
+        
+        try {
+            st = con.createStatement();
+            rs = st.executeQuery(sql);
+        } catch (SQLException ex) {
+            Logger.getLogger(Panel_Nueva_Venta.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        sql = "SELECT COUNT(Codigo_P) FROM "+tabla+"";
+        
+        
+        return rs;
     }
     
     //Listeners
