@@ -8,6 +8,7 @@ package Panels_menu_principal;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,19 +18,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 /**
  *
  * @author Eduardo Elias Hernandez Moreno
@@ -43,8 +42,11 @@ public class Panel_Nueva_Venta extends JPanel{
     }
     
     private void initComponents(final JMenuItem menuItem) throws SQLException{
-        final String [] vector_Producto_Venta = {null,null,null,null,null};
+        final Object [] vector_Producto_Venta = {null,null,null,null,null};
         final String [] vector_Servicio_Venta = {null,null,null,null,null};
+        final boolean[] editable_Producto_Venta = {false,false,false,false,false};
+        final boolean[] editable_Servicio_Venta = {false,false,false,false,false};
+        
         final byte nTabs = 2;
         final int[] nFilas = {1, 1};
         
@@ -92,6 +94,7 @@ public class Panel_Nueva_Venta extends JPanel{
         //JTextField's
         txtCodigo_V.setEditable(false);
         txtNumero_Cl.setText("0");
+        txtTotal_V.setEditable(false);
         
         //JDate's
         jdchFecha_V.setDateFormatString("dd/MM/yyyy");
@@ -105,11 +108,15 @@ public class Panel_Nueva_Venta extends JPanel{
                 new String [] {
                     "Codigo producto", "Nombre", "Cantidad", "Precio", "Total"
                 }
-            ));
-            //En base al nombre del producto se busca el codigo en la base de datos
-
+            ){
+                @Override
+                public boolean isCellEditable(int row, int column){
+                    return editable_Producto_Venta[column];
+                }
+            }
+        );
             sptProductos.setViewportView(tProductos_Venta);
-        setBox(tProductos_Venta, tProductos_Venta.getColumnModel().getColumn(0), "producto", (DefaultTableModel) tProductos_Venta.getModel());    
+           
             
         tServicios_Venta.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
@@ -118,16 +125,23 @@ public class Panel_Nueva_Venta extends JPanel{
                 new String [] {
                     "Codigo servicio", "Nombre", "Cantidad", "Precio", "Total"
                 }
-            ));
-            //En base al nombre del producto se busca el codigo en la base de datos
+            ){
+                @Override
+                public boolean isCellEditable(int row, int column){
+                    return editable_Servicio_Venta[column];
+                }
+            }
+        );
 
             sptServicios.setViewportView(tServicios_Venta);  
-        //setBox(tServicios_Venta, tServicios_Venta.getColumnModel().getColumn(0), "servicio", (DefaultTableModel) tServicios_Venta.getModel());
             
         //DefaultTablemModel's    
         final DefaultTableModel dtmProductos_V = (DefaultTableModel) tProductos_Venta.getModel();
         final DefaultTableModel dtmServicios_V = (DefaultTableModel) tServicios_Venta.getModel();
-
+        
+        //JComboBox
+        comboBoxSeleccionar(nTabs);
+        
         //JButton's
         botonesNueva_Fila(vector_Producto_Venta, vector_Servicio_Venta, nTabs, nFilas);
          
@@ -233,7 +247,7 @@ public class Panel_Nueva_Venta extends JPanel{
         String sql = "SELECT Codigo_V FROM ultimas_claves_secuenciales";
         try (Statement statement = con.createStatement()) {
             ResultSet rs = statement.executeQuery(sql);
-            while (rs.next()){
+            while (rs.next() == true){
                 codigo_V = rs.getString("Codigo_V");         
             }
             statement.close();
@@ -271,7 +285,7 @@ public class Panel_Nueva_Venta extends JPanel{
         return fecha;
     }
     
-    private void botonesNueva_Fila (final String[] vector_Producto_Venta, final String[] vector_Servicio_Venta, byte nTabs, final int[] nFilas){    
+    private void botonesNueva_Fila (final Object[] vector_Producto_Venta, final String[] vector_Servicio_Venta, byte nTabs, final int[] nFilas){    
         for (int i = 0; i < nTabs; i++) {
             JButton btn = new JButton();
             
@@ -284,20 +298,27 @@ public class Panel_Nueva_Venta extends JPanel{
                     
                     try{
                         javax.swing.table.DefaultTableModel tmTabla = new javax.swing.table.DefaultTableModel();
-                        String[] vector = null;
+                        Object[] vector = null;
+                        String[] datos = {"", "", ""};//codigo, nombre, precio
                         
                         if (indice == 0){//Producto_Venta
                             tmTabla = (javax.swing.table.DefaultTableModel)tProductos_Venta.getModel();
                             vector = vector_Producto_Venta;
+                            
+                            //obtener datos
+                            obtenerDatos_Tablas(cbSeleccionar.get(indice), datos);    
                         }
                         else{//Servicio_Venta
                             if (indice == 1){
                                 tmTabla = (javax.swing.table.DefaultTableModel)tServicios_Venta.getModel();
                                 vector = vector_Servicio_Venta;
+                                
+                                //obtener datos
+                                obtenerDatos_Tablas(cbSeleccionar.get(indice), datos);                  
                             }
                         }
-
-                        btnNueva_FilaActionPerformed(tmTabla, vector, nFilas, indice);
+                        String cantidad = JOptionPane.showInputDialog("Ingrese cantidad");                       
+                        btnNueva_FilaActionPerformed(tmTabla, vector, nFilas, indice, datos[0], datos[1], cantidad, datos[2]);
                     }
                     catch(Exception e){
                         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -310,18 +331,28 @@ public class Panel_Nueva_Venta extends JPanel{
     private void panelesTabbedPane (byte nTabs){
         for (int i = 0; i < nTabs; i++) {
             JPanel panel = new JPanel();
+            JPanel panelNORTH = new JPanel();
+            panelNORTH.setLayout(new BorderLayout());
+            
             pTabbedPane.add(panel);
             pTabbedPane.get(i).setLayout(new BorderLayout());
             
             if (i == 0){
+                panelNORTH.add(btnNueva_fila.get(i), BorderLayout.CENTER);
+                panelNORTH.add(cbSeleccionar.get(i), BorderLayout.WEST);
+                
+                pTabbedPane.get(i).add(panelNORTH, BorderLayout.NORTH);
                 pTabbedPane.get(i).add(sptProductos, BorderLayout.CENTER);
-                pTabbedPane.get(i).add(btnNueva_fila.get(i), BorderLayout.SOUTH);
                 tpTablas.addTab("Productos vendidos", pTabbedPane.get(i));
             }
             else{
                 if (i == 1){
+                    //Falta agregar JComboBox en WEST
+                    panelNORTH.add(btnNueva_fila.get(i), BorderLayout.CENTER);
+                    panelNORTH.add(cbSeleccionar.get(i), BorderLayout.WEST);
+                    
+                    pTabbedPane.get(i).add(panelNORTH, BorderLayout.NORTH);
                     pTabbedPane.get(i).add(sptServicios, BorderLayout.CENTER);
-                    pTabbedPane.get(i).add(btnNueva_fila.get(i), BorderLayout.SOUTH);
                     tpTablas.addTab("Servicios vendidos", pTabbedPane.get(i));
                 }
             }
@@ -329,42 +360,93 @@ public class Panel_Nueva_Venta extends JPanel{
     
     }
     
-    private void setBox (JTable tabla, TableColumn columna, String nombreT, final DefaultTableModel dtmVenta) throws SQLException{
-        final JComboBox cb = new JComboBox();
-        String sql = "SELECT Codigo_P, NOMBRE_P, Precio_P FROM producto";
+    
+    private void comboBoxSeleccionar (byte nTabs) throws SQLException{
+        cbSeleccionar = new ArrayList<JComboBox>();
         
-        final ResultSet rs = consultar(sql, "producto");
+        //cambio nombreT por indice
+        String sql = "";
+        String[] columnas = {"", "", ""};
+        String nombreT = "";
         
-        while (rs.next() == true){
-            try {
-                cb.addItem(rs.getString("Codigo_P") + " " + rs.getString("NOMBRE_P"));
-                
-            } catch (SQLException ex) {
-                Logger.getLogger(Panel_Nueva_Venta.class.getName()).log(Level.SEVERE, null, ex);
+        for (int i = 0; i < nTabs; i++) {
+            final JComboBox cb = new JComboBox();
+            
+            if (i ==0){
+                nombreT = "producto";
+                columnas[0] = "Codigo_P";
+                columnas[1] = "NOMBRE_P";
+                columnas[2] = "Precio_P";         
             }
-        }
+            else{
+                if (i == 1){
+                    nombreT = "servicio";
+                    columnas[0] = "Codigo_S";
+                    columnas[1] = "Nombre_S";
+                    columnas[2] = "Precio_S";             
+                }
+            }
+            
+            sql = "SELECT "+columnas[0]+", "+columnas[1]+", "+columnas[2]+" FROM " + nombreT;
         
-        cb.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            final ResultSet rs = consultar(sql);
+
+            while (rs.next() == true){
                 try {
-                    cbComboActionPerformed(cb, rs, dtmVenta);
+                    cb.addItem(rs.getString(columnas[0]) + "--" + rs.getString(columnas[1]) + "--" + rs.getDouble(columnas[2]));
+
                 } catch (SQLException ex) {
                     Logger.getLogger(Panel_Nueva_Venta.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        });
+            
+            cbSeleccionar.add(cb);
+            
+        }
         
-        columna.setCellEditor(new DefaultCellEditor(cb));
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-        renderer.setToolTipText("Seleccionar Codigo de " + nombreT);
-        columna.setCellRenderer(renderer);
+    }   
+    
+    private void obtenerDatos_Tablas (JComboBox comboBox, String[] datos){
+        String item = comboBox.getSelectedItem()+"";
+        int indice = 0;
+        
+        //Se recorre item
+        //Se obtiene codigo
+        for (int i = 0; i<item.length(); i++){
+            if (item.charAt(i) != '-' && item.charAt(i+1) != '-'){
+                datos[0] += item.charAt(i);
+            } 
+            else {
+                datos[0] += item.charAt(i);
+                indice = i;     
+                break;
+            }
+        }
+        
+        //se obtiene nombre
+        for (int i = indice + 3; i < item.length(); i++) {
+            if (item.charAt(i) != '-' && item.charAt(i+1) != '-'){
+                datos[1] += item.charAt(i);
+            } 
+            else {
+                datos[1] += item.charAt(i);
+                indice = i;     
+                break;
+            }
+        }
+        
+        //se obtiene precio
+        //se obtiene nombre
+        for (int i = indice + 3; i < item.length(); i++) {
+            datos[2] += item.charAt(i);
+        }
+        
     }
     
-    private ResultSet consultar (String sql, String tabla){
+    private ResultSet consultar (String sql){
 
         ResultSet rs = null;
-        Statement st = null;
+        Statement st;
 
         try {
             st = con.createStatement();
@@ -372,16 +454,35 @@ public class Panel_Nueva_Venta extends JPanel{
         } catch (SQLException ex) {
             Logger.getLogger(Panel_Nueva_Venta.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
         return rs;
     }
     
     //Listeners
-    private void btnNueva_FilaActionPerformed(javax.swing.table.DefaultTableModel dtmTabla, String[] vector, int[] nFilas, int i) {                                                  
+    private void btnNueva_FilaActionPerformed(javax.swing.table.DefaultTableModel dtmTabla, Object[] vector, int[] nFilas, int i, String codigo, String nombre, String cantidad, String precio) {                                                  
         // TODO add your handling code here:
         //Se abre ventana para agregar producto o servicio para venta
         
         dtmTabla.addRow(vector);
+        dtmTabla.setValueAt(codigo, nFilas[i] - 1, 0);
+        
+        dtmTabla.setValueAt(nombre, nFilas[i] - 1, 1);
+        
+        int cantidad1 = Integer.parseInt(cantidad);
+        dtmTabla.setValueAt(cantidad1, nFilas[i] - 1, 2);
+        
+        double precio1 = Double.parseDouble(precio);        
+        dtmTabla.setValueAt(precio1, nFilas[i]-1, 3);
+        
+        //Se calcula el total
+        double total = cantidad1 * precio1;
+        dtmTabla.setValueAt(total, nFilas[i]-1, 4);
+        total_V += total;
+        txtTotal_V.setText(total_V+"");
+        
         nFilas[i]++;
+        
+        
         System.out.println(i+ " "+ nFilas[i]);
     }                                                 
 
@@ -403,6 +504,7 @@ public class Panel_Nueva_Venta extends JPanel{
         Panel_Nuevos_Datos panel = new Panel_Nuevos_Datos("Nuevo_Cliente", con, menuItem);
         
         javax.swing.JFrame ventana = new javax.swing.JFrame();
+        ventana.add(panel.pPrincipal);
         
         ventana.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         //ventana.add(panel.pPrincipal);
@@ -411,31 +513,10 @@ public class Panel_Nueva_Venta extends JPanel{
         ventana.setVisible(true);
     }              
     
-    private void cbComboActionPerformed (JComboBox cb, ResultSet rs, DefaultTableModel dtmModelo) throws SQLException{
-        String item = (String) cb.getSelectedItem();
-        System.out.println(item);
-        String codigo_P = "";
-        
-        for (int i = 0; i < item.length(); i++){
-            if (item.charAt(i) != ' '){
-                codigo_P += item.charAt(i);
-            }
-            else{
-                break;
-            }
-        }//arreglo de columnas
-        
-        while (!rs.getString("Codigo_P").equals(codigo_P)){
-            rs.next();
-        }
-        //cb.ge;
-        dtmModelo.setValueAt(rs.getString("NOMBRE_P"), 0, 1);
-        dtmModelo.setValueAt(rs.getString("Precio_P"), 0, 3);
-        //Se consiguen valores para tabla
-    }
     
     // Variables declaration - do not modify  
     private Connection con;
+    private int total_V = 0;
     
     private JPanel pCentro;
     private JPanel pBotones;
@@ -446,6 +527,8 @@ public class Panel_Nueva_Venta extends JPanel{
     private JPanel pNumero_Cl;
     private JPanel pTotal_V;
     private ArrayList<JPanel> pTabbedPane;
+    
+    private ArrayList<JComboBox> cbSeleccionar;
                        
     private JTable tProductos_Venta;
     private JTable tServicios_Venta;
@@ -469,5 +552,6 @@ public class Panel_Nueva_Venta extends JPanel{
     private JTextField txtNumero_Cl;
     private JTextField txtTotal_V;
     // End of variables declaration    
+
     
 }
