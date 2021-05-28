@@ -109,7 +109,7 @@ public class Panel_Nueva_Venta extends JPanel{
             //En base al nombre del producto se busca el codigo en la base de datos
 
             sptProductos.setViewportView(tProductos_Venta);
-        setBox(tProductos_Venta, tProductos_Venta.getColumnModel().getColumn(0), "producto");    
+        setBox(tProductos_Venta, tProductos_Venta.getColumnModel().getColumn(0), "producto", (DefaultTableModel) tProductos_Venta.getModel());    
             
         tServicios_Venta.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
@@ -122,7 +122,7 @@ public class Panel_Nueva_Venta extends JPanel{
             //En base al nombre del producto se busca el codigo en la base de datos
 
             sptServicios.setViewportView(tServicios_Venta);  
-        setBox(tServicios_Venta, tServicios_Venta.getColumnModel().getColumn(0), "servicio");
+        //setBox(tServicios_Venta, tServicios_Venta.getColumnModel().getColumn(0), "servicio", (DefaultTableModel) tServicios_Venta.getModel());
             
         //DefaultTablemModel's    
         final DefaultTableModel dtmProductos_V = (DefaultTableModel) tProductos_Venta.getModel();
@@ -329,22 +329,31 @@ public class Panel_Nueva_Venta extends JPanel{
     
     }
     
-    private void setBox (JTable tabla, TableColumn columna, String nombreT){
-        JComboBox cb = new JComboBox();
+    private void setBox (JTable tabla, TableColumn columna, String nombreT, final DefaultTableModel dtmVenta) throws SQLException{
+        final JComboBox cb = new JComboBox();
         String sql = "SELECT Codigo_P, NOMBRE_P, Precio_P FROM producto";
-        int[] numeroFilas = {0};
         
-        ResultSet rs = consultar(sql, numeroFilas, "producto");
+        final ResultSet rs = consultar(sql, "producto");
         
-        for (int i = 0; i < numeroFilas[0]; i++) {
+        while (rs.next() == true){
             try {
-                if (rs.next()){
-                    cb.addItem(rs.getString("Codigo_P")+rs.getString("NOMBRE_P"));
-                }
+                cb.addItem(rs.getString("Codigo_P") + " " + rs.getString("NOMBRE_P"));
+                
             } catch (SQLException ex) {
                 Logger.getLogger(Panel_Nueva_Venta.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
+        cb.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    cbComboActionPerformed(cb, rs, dtmVenta);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Panel_Nueva_Venta.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
         
         columna.setCellEditor(new DefaultCellEditor(cb));
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
@@ -352,30 +361,17 @@ public class Panel_Nueva_Venta extends JPanel{
         columna.setCellRenderer(renderer);
     }
     
-    private ResultSet consultar (String sql, int[] nFilas, String tabla){
-        
-            ResultSet rs = null;
-            Statement st = null;
-            
-            try {
-                st = con.createStatement();
-                rs = st.executeQuery(sql);
-            } catch (SQLException ex) {
-                Logger.getLogger(Panel_Nueva_Venta.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            sql = "SELECT COUNT(*) as filas FROM "+tabla;
-            
-            try{
-                ResultSet rs1 = st.executeQuery(sql);
-                if (rs1.next()) {
-                    nFilas[0] = rs.getInt("filas");
-                }         
-                rs1.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(Panel_Nueva_Venta.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        
+    private ResultSet consultar (String sql, String tabla){
+
+        ResultSet rs = null;
+        Statement st = null;
+
+        try {
+            st = con.createStatement();
+            rs = st.executeQuery(sql);
+        } catch (SQLException ex) {
+            Logger.getLogger(Panel_Nueva_Venta.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return rs;
     }
     
@@ -414,6 +410,29 @@ public class Panel_Nueva_Venta extends JPanel{
         ventana.pack();
         ventana.setVisible(true);
     }              
+    
+    private void cbComboActionPerformed (JComboBox cb, ResultSet rs, DefaultTableModel dtmModelo) throws SQLException{
+        String item = (String) cb.getSelectedItem();
+        System.out.println(item);
+        String codigo_P = "";
+        
+        for (int i = 0; i < item.length(); i++){
+            if (item.charAt(i) != ' '){
+                codigo_P += item.charAt(i);
+            }
+            else{
+                break;
+            }
+        }//arreglo de columnas
+        
+        while (!rs.getString("Codigo_P").equals(codigo_P)){
+            rs.next();
+        }
+        //cb.ge;
+        dtmModelo.setValueAt(rs.getString("NOMBRE_P"), 0, 1);
+        dtmModelo.setValueAt(rs.getString("Precio_P"), 0, 3);
+        //Se consiguen valores para tabla
+    }
     
     // Variables declaration - do not modify  
     private Connection con;
