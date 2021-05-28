@@ -364,13 +364,14 @@ public class Panel_Nueva_Venta extends JPanel{
                 Logger.getLogger(Panel_Nueva_Venta.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-            sql = "SELECT COUNT(*) as filas FROM "+tabla+"";
+            sql = "SELECT COUNT(*) as filas FROM "+tabla;
             
             try{
                 ResultSet rs1 = st.executeQuery(sql);
                 if (rs1.next()) {
                     nFilas[0] = rs.getInt("filas");
                 }         
+                rs1.close();
             } catch (SQLException ex) {
                 Logger.getLogger(Panel_Nueva_Venta.class.getName()).log(Level.SEVERE, null, ex);
             }
