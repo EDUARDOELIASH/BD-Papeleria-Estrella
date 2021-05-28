@@ -1,6 +1,7 @@
 package Ventana;
 
 import Panels_menu_principal.Panel_Consulta_Datos;
+import Panels_menu_principal.Panel_Consulta_Ventas;
 import Panels_menu_principal.Panel_Nueva_Compra;
 import Panels_menu_principal.Panel_Nueva_Venta;
 import Panels_menu_principal.Panel_Nuevos_Datos;
@@ -225,6 +226,11 @@ public class Papeleria extends JApplet implements ActionListener{
         if (e.getSource() == m_cD_Proveedores){
             Panel_Consulta_Datos panel = new Panel_Consulta_Datos("Consultar_Proveedor", con);
             llamarPanel(panel.pPrincipal);
+        }
+        //Productos y Ventas
+        if (e.getSource() == m_c_Ventas){
+            Panel_Consulta_Ventas panel = new Panel_Consulta_Ventas(con);
+            llamarPanel(panel);
         }
         if (e.getSource() == m_s_Cerrar){
             try {
