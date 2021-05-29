@@ -4,6 +4,7 @@ package Panels_menu_principal;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,18 +15,20 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.AncestorListener;
 import javax.swing.table.DefaultTableModel;
 
 /*
  * @author Gijon Vazquez Elias Dominick
  */
-public class Panel_Consulta_Ventas extends JPanel{
+public class Panel_Consulta_Ventas extends JPanel implements ActionListener{
     
     //Talves se necesite parametro Connection
     public Panel_Consulta_Ventas (Connection con){
@@ -34,8 +37,8 @@ public class Panel_Consulta_Ventas extends JPanel{
     }
     
     private void initComponents(){
-        final String [] vector_Producto_Venta = {null,null,null,null};
-        final String [] vector_Servicio_Venta = {null,null,null,null,null};
+        final String [] vector_Producto_Venta = {null,null,null,null,null,null,null};
+        final String [] vector_Servicio_Venta = {null,null,null,null,null,null,null};
         final byte nTabs = 2;
         
         pTablaP_Y_S = new JPanel();
@@ -54,8 +57,8 @@ public class Panel_Consulta_Ventas extends JPanel{
         
         tpTablas = new JTabbedPane(JTabbedPane.BOTTOM);
         
-        btnNuevo_Cliente = new JButton();
-        btnRegistrar = new JButton();
+        btnConsultar_Cliente = new JButton();
+        btnConsultar_General = new JButton();
         btnNueva_fila = new ArrayList<JButton>();
         jdchFecha_V = new com.toedter.calendar.JDateChooser();
         lblCodigo_V = new JLabel();
@@ -89,7 +92,7 @@ public class Panel_Consulta_Ventas extends JPanel{
                     vector_Producto_Venta
                 },
                 new String [] {
-                    "Codigo_P", "Cantidad", "Precio", "Total"
+                    "Codigo Venta","Codigo Producto","Nombre Producto", "Precio", "Cantidad", "Total", "Fecha"
                 }
             ));
             //En base al nombre del producto se busca el codigo en la base de datos
@@ -101,7 +104,7 @@ public class Panel_Consulta_Ventas extends JPanel{
                     vector_Servicio_Venta
                 },
                 new String [] {
-                    "Nombre_S", "Codigo_S", "Cantidad", "Precio", "Total"
+                    "Codigo Venta", "Codigo Servicio", "Nombre Servico", "Precio", "Cantidad", "Total", "Fecha"
                 }
             ));
             //En base al nombre del producto se busca el codigo en la base de datos
@@ -111,25 +114,26 @@ public class Panel_Consulta_Ventas extends JPanel{
 //JButton's
         botonesNueva_Fila(vector_Producto_Venta, vector_Servicio_Venta, nTabs);
         
-        
-        btnNuevo_Cliente.setText("Nuevo cliente");
-        btnNuevo_Cliente.addActionListener(new java.awt.event.ActionListener() {
+    
+        btnConsultar_Cliente.setText("Consultar cliente");
+        btnConsultar_Cliente.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNuevo_ClienteActionPerformed(evt, con);
+                btnConsultar_ClienteActionPerformed(con);
+            }
+
+            private void btnConsultar_ClienteActionPerformed(Connection con) {          
             }
         });
-        
-        btnRegistrar.setText("Registrar venta");
-        btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
+       
+        btnConsultar_General.setText("Consulta General");
+        btnConsultar_General.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt){
-                btnRegistrarActionPerformed(evt);
-            
+                //btnRegistrarActionPerformed(evt);
             }
         });    
-        
-        
+           
         
         //JTabbedPane
         tpTablas.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -176,7 +180,7 @@ public class Panel_Consulta_Ventas extends JPanel{
         /*Contenido pTablaP_Y_S*/
         pTablaP_Y_S.setLayout(new BorderLayout());
         pTablaP_Y_S.add(pDatos_Venta, BorderLayout.NORTH);
-        pTablaP_Y_S.add(pTotal_V, BorderLayout.SOUTH);
+        //pTablaP_Y_S.add(pTotal_V, BorderLayout.SOUTH);
         pTablaP_Y_S.add(tpTablas, BorderLayout.CENTER);
         
         
@@ -187,45 +191,12 @@ public class Panel_Consulta_Ventas extends JPanel{
         pCentro.add(pBotones, BorderLayout.SOUTH);
         
         /*Contenido pBotones*/
-        pBotones.setLayout(new GridLayout(1, 2));
-        pBotones.add(btnNuevo_Cliente);
-        pBotones.add(btnRegistrar);
+        pBotones.setLayout(new GridLayout(1, 1));
+        pBotones.add(btnConsultar_Cliente);
+        //pBotones.add(btnRegistrar);
         
     }
     
-    //metodos de panel Nueva_Venta, se activan en constructor despues de initComponents
-    private String nuevo_Codigo_V (Connection con) throws SQLException{
-        //El resultado de este metodo se asigna a JTextField del Codigo_V de nueva venta
-        //Hacer consulta a tabla ultima_venta
-        String codigo_V;
-        String sql = "SELECT Codigo_V FROM ultima_venta";
-        try (Statement statement = con.createStatement()) {
-            try (ResultSet rs = statement.executeQuery(sql)) {
-                codigo_V = rs.getString("Codigo_V");         
-            }
-            statement.close();
-            //con.close();
-        }
-        
-        //Generar nuevo Codigo_V
-        String numero="";
-        String primerCaracter = codigo_V.substring(0,1);
-        for (int i=1; i<=codigo_V.length(); i++){
-            if (i!=codigo_V.length()){
-                numero += codigo_V.substring(i,i+1);
-            }
-            else{
-                codigo_V = "";
-                codigo_V += primerCaracter + (Integer.parseInt(numero) + 1);
-            }
-        }
-        
-        //Cada vez que se registra una nueva venta, se actualiza tabla ultima_venta
-        /*
-        txtCodigo_V.setText(nuevo_Codigo_V(con));
-        */
-        return codigo_V;
-    }
     
     private Date fechaActual(){
         Date fecha=new Date();
@@ -241,6 +212,7 @@ public class Panel_Consulta_Ventas extends JPanel{
     
     private void botonesNueva_Fila (final String[] vector_Producto_Venta, final String[] vector_Servicio_Venta, byte nTabs){    
         for (int i = 0; i < nTabs; i++) {
+            
             JButton btn = new JButton();
             
             btnNueva_fila.add(btn);
@@ -316,7 +288,7 @@ public class Panel_Consulta_Ventas extends JPanel{
                 }
                 
                 if (indice == 0){//Producto_Venta
-                    sql = "select pv.Codigo_V as Ventas, pv.Codigo_P as ID, p.NOMBRE_P as Producto, p.Precio_P as Precio, pv.Cantidad_P as Pedido, p.Precio_P*pv.Cantidad_P as SubTotal, v.Fecha_V as Fecha from producto_venta as pv inner join producto as p on p.Codigo_P = pv.Codigo_P inner join venta as v on v.Codigo_V = pv.Codigo_V having  p.Nombre_P is not null order by v.Codigo_V asc";
+                    sql = "select pv.Codigo_V as Ventas, pv.Codigo_P as ID, p.NOMBRE_P as Producto, p.Precio_P as Precio, pv.Cantidad_P as Pedido, p.Precio_P*pv.Cantidad_P as SubTotal, v.Fecha_V as Fecha from producto_venta as pv inner join producto as p on p.Codigo_P = pv.Codigo_P inner join venta as v on v.Codigo_V = pv.Codigo_V having  p.Nombre_P is not null order by v.Fecha_V asc";
                     try {
                         sentencia=(Statement) con.createStatement();
                         rs=sentencia.executeQuery(sql);
@@ -326,10 +298,13 @@ public class Panel_Consulta_Ventas extends JPanel{
                     for (int i = 0; i < nFilas; i++) {   
                         try {
                             if(rs.next()&&rs!=null){
-                                dtmTablePro.setValueAt(rs.getString("ID"), i, 0);
-                                dtmTablePro.setValueAt(rs.getString("Pedido"), i, 1);
-                                dtmTablePro.setValueAt(rs.getString("Precio"), i, 2);
-                                dtmTablePro.setValueAt(rs.getString("Subtotal"), i, 3);
+                                dtmTablePro.setValueAt(rs.getString("Ventas"), i, 0);
+                                dtmTablePro.setValueAt(rs.getString("ID"), i, 1);
+                                dtmTablePro.setValueAt(rs.getString("Producto"), i, 2);
+                                dtmTablePro.setValueAt(rs.getString("Precio"), i, 3);
+                                dtmTablePro.setValueAt(rs.getString("Pedido"), i, 4);
+                                dtmTablePro.setValueAt(rs.getString("SubTotal"), i, 5);
+                                dtmTablePro.setValueAt(rs.getString("Fecha"), i, 6);
                             }
                         } catch (SQLException ex) {
                             Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
@@ -338,7 +313,7 @@ public class Panel_Consulta_Ventas extends JPanel{
                 }
                 else{//Servicio_Venta
                     if (indice == 1){
-                        sql = "select sv.Codigo_V as Venta, sv.Codigo_S as ID, s.Nombre_S as Servicio, s.Precio_S as Precio, sv.Cantidad_S as Encargo, s.Precio_S*sv.Cantidad_S as SubTotal, v.Fecha_V as Fecha from servicio_venta as sv inner join servicio as s on s.Codigo_S = sv.Codigo_S inner join venta as v on v.Codigo_V = sv.Codigo_V having Servicio is not null order by v.Codigo_V asc";
+                        sql = "select sv.Codigo_V as Venta, sv.Codigo_S as ID, s.Nombre_S as Servicio, s.Precio_S as Precio, sv.Cantidad_S as Encargo, s.Precio_S*sv.Cantidad_S as SubTotal, v.Fecha_V as Fecha from servicio_venta as sv inner join servicio as s on s.Codigo_S = sv.Codigo_S inner join venta as v on v.Codigo_V = sv.Codigo_V having Servicio is not null order by v.Fecha_V asc";
                         try {
                             sentencia=(Statement) con.createStatement();
                             rs=sentencia.executeQuery(sql);
@@ -348,11 +323,13 @@ public class Panel_Consulta_Ventas extends JPanel{
                         for (int i = 0; i < nFilas; i++) {   
                             try {
                                 if(rs.next()&&rs!=null){
-                                    dtmTableServ.setValueAt(rs.getString("Servicio"), i, 0);
+                                    dtmTableServ.setValueAt(rs.getString("Venta"), i, 0);
                                     dtmTableServ.setValueAt(rs.getString("ID"), i, 1);
-                                    dtmTableServ.setValueAt(rs.getString("Encargo"), i, 2);
+                                    dtmTableServ.setValueAt(rs.getString("Servicio"), i, 2);
                                     dtmTableServ.setValueAt(rs.getString("Precio"), i, 3);
-                                    dtmTableServ.setValueAt(rs.getString("SubTotal"), i, 4);
+                                    dtmTableServ.setValueAt(rs.getString("Encargo"), i, 4);
+                                    dtmTableServ.setValueAt(rs.getString("SubTotal"), i, 5);
+                                    dtmTableServ.setValueAt(rs.getString("Fecha"), i, 6);
                                 }
                             } catch (SQLException ex) {
                                 Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
@@ -373,16 +350,19 @@ public class Panel_Consulta_Ventas extends JPanel{
             
             if (i == 0){
                 pTabbedPane.get(i).add(sptProductos, BorderLayout.CENTER);
-                pTabbedPane.get(i).add(btnNueva_fila.get(i), BorderLayout.SOUTH);
+                //pTabbedPane.get(i).add(btnNueva_fila.get(i), BorderLayout.SOUTH);
                 tpTablas.addTab("Productos vendidos", pTabbedPane.get(i));
+              //  Productos=(JTabbedPane) tpTablas.getTabComponentAt(i);
             }
             else{
                 if (i == 1){
                     pTabbedPane.get(i).add(sptServicios, BorderLayout.CENTER);
-                    pTabbedPane.get(i).add(btnNueva_fila.get(i), BorderLayout.SOUTH);
+                    //pTabbedPane.get(i).add(btnNueva_fila.get(i), BorderLayout.SOUTH);
                     tpTablas.addTab("Servicios vendidos", pTabbedPane.get(i));
+                 //   Servicio=(JTabbedPane) tpTablas.getSelectedComponent();
                 }
             }
+            
         }
     
     }
@@ -418,26 +398,7 @@ public class Panel_Consulta_Ventas extends JPanel{
         }
         
         
-    }                                                 
-
-    private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {                                             
-        // TODO add your handling code here:
-        //Se registra todo en las tablas de las bases de datos
-    }                                            
-
-    private void btnNuevo_ClienteActionPerformed(java.awt.event.ActionEvent evt, Connection con) {                                                 
-        // TODO add your handling code here:
-        //Se abre panel pNuevo_Cliente
-        Panel_Nuevos_Datos panel = new Panel_Nuevos_Datos("Nuevo_Cliente", con);
-        
-        javax.swing.JFrame ventana = new javax.swing.JFrame();
-        
-        ventana.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        ventana.add(panel.pPrincipal);
-        ventana.setLocationRelativeTo(null);
-        ventana.pack();
-        ventana.setVisible(true);
-    }              
+    }                                                          
     
     // Variables declaration - do not modify  
     private Connection con;
@@ -458,9 +419,11 @@ public class Panel_Consulta_Ventas extends JPanel{
     private JScrollPane sptServicios;
     
     private JTabbedPane tpTablas;
+    //public JTabbedPane Productos;
+    //public JTabbedPane Servicio;
     
-    private JButton btnNuevo_Cliente;
-    private JButton btnRegistrar;
+    private JButton btnConsultar_Cliente;
+    private JButton btnConsultar_General;
     private ArrayList<JButton> btnNueva_fila;
     
     private com.toedter.calendar.JDateChooser jdchFecha_V;
@@ -474,5 +437,16 @@ public class Panel_Consulta_Ventas extends JPanel{
     private JTextField txtNumero_Cl;
     private JTextField txtTotal_V;
     // End of variables declaration    
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource()==tpTablas.getTabComponentAt(0)){
+            
+        }
+       /* if(e.getSource()==Servicio){
+            JFrame x=new JFrame();
+            x.setVisible(true);
+        }*/
+    }
     
 }
