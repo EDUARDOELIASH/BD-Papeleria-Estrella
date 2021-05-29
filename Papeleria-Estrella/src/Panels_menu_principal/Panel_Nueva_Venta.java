@@ -48,7 +48,7 @@ public class Panel_Nueva_Venta extends JPanel{
         final boolean[] editable_Servicio_Venta = {false,false,false,false,false};
         
         final byte nTabs = 2;
-        final int[] nFilas = {1, 1};
+        final int[] nFilas = {0, 0};
         
         pTablaP_Y_S = new JPanel();
         pCentro = new JPanel();
@@ -98,12 +98,13 @@ public class Panel_Nueva_Venta extends JPanel{
         
         //JDate's
         jdchFecha_V.setDateFormatString("dd/MM/yyyy");
+
         jdchFecha_V.setDate(fechaActual());
         
         //JTable's
         tProductos_Venta.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
-                    vector_Producto_Venta
+                    
                 },
                 new String [] {
                     "Codigo producto", "Nombre", "Cantidad", "Precio", "Total"
@@ -120,7 +121,7 @@ public class Panel_Nueva_Venta extends JPanel{
             
         tServicios_Venta.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
-                    vector_Servicio_Venta
+                    
                 },
                 new String [] {
                     "Codigo servicio", "Nombre", "Cantidad", "Precio", "Total"
@@ -161,22 +162,48 @@ public class Panel_Nueva_Venta extends JPanel{
         btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt){
-                //Insert en tabla venta y cliente_venta
-                
-                
-                //Insert productos vendidos falta consultar precios en tabla consultar nombre p
-                for (int i = 0; i<nFilas[0]; i++){  
-                    String sql = "INSERT INTO producto_venta VALUES('"+txtCodigo_V+"','"+dtmProductos_V.getValueAt(i, 0)+"', "+dtmProductos_V.getValueAt(i, 2)+", "+1+", "+0+")";
-                    btnRegistrarActionPerformed(sql); 
+                if (nFilas[0] > 0 || nFilas[1] > 0){
+                    //Insert en tabla venta y cliente_venta
+                    String cadena = JOptionPane.showInputDialog("Total = "+txtTotal_V.getText()+" \nDigite importe: ");
+                    //crear metodo cadena to double
+                    boolean importe_Val = false;
+
+
+                    while (importe_Val == false){        
+                        if (Double.parseDouble(cadena) >= Double.parseDouble(txtTotal_V.getText())){
+                            Date fecha = jdchFecha_V.getDate();
+                            java.sql.Date date2 = new java.sql.Date(fecha.getTime());
+        
+                            System.out.println(date2);
+                            String sql1 = "CALL Nueva_Venta('"+txtCodigo_V.getText()+"', '"+ date2+"', "+txtTotal_V.getText()+", "+txtNumero_Cl.getText()+", "+Double.parseDouble(cadena)+")";
+                            btnRegistrarActionPerformed(sql1); 
+                            //Insert productos vendidos falta consultar precios en tabla consultar nombre p
+                            if (nFilas[0] > 0){
+                                for (int i = 0; i<nFilas[0]; i++){  
+                                    String sql = "INSERT INTO producto_venta VALUES('"+txtCodigo_V.getText()+"','"+dtmProductos_V.getValueAt(i, 0)+"', "+dtmProductos_V.getValueAt(i, 2)+", "+1+", "+0+")";
+                                    btnRegistrarActionPerformed(sql); 
+                                }
+                            }
+                            //Insert servicios vendidos cambiar de modelo
+
+                            if (nFilas[1] > 0){
+                                for (int i = 0; i<nFilas[1]; i++){
+                                    String sql = "INSERT INTO servicio_venta VALUES('"+txtCodigo_V.getText()+"', '"+dtmServicios_V.getValueAt(i, 0)+"', "+dtmServicios_V.getValueAt(i, 2)+", "+1+")";
+                                    btnRegistrarActionPerformed(sql);  
+                                }
+                            }
+                            importe_Val = true;
+                            JOptionPane.showMessageDialog(null, "Cambio = " );
+                        }    
+                        else {
+                            JOptionPane.showMessageDialog(null, "Digite un importe valido");
+                        }
+                    }
                 }
-                
-                //Insert servicios vendidos cambiar de modelo
-                for (int i = 0; i<nFilas[1]; i++){
-                    String sql = "INSERT INTO servicio_venta VALUES('"+txtCodigo_V+"', '"+dtmServicios_V.getValueAt(i, 0)+"', "+dtmServicios_V.getValueAt(i, 2)+", "+1+")";
-                    btnRegistrarActionPerformed(sql);  
+                else{
+                    JOptionPane.showMessageDialog(null, "Ingrese datos en la tabla");
                 }
-                
-                //se vuelve a llamar panel
+                    //se vuelve a llamar panel
             }
         });    
            
@@ -464,19 +491,19 @@ public class Panel_Nueva_Venta extends JPanel{
         //Se abre ventana para agregar producto o servicio para venta
         
         dtmTabla.addRow(vector);
-        dtmTabla.setValueAt(codigo, nFilas[i] - 1, 0);
+        dtmTabla.setValueAt(codigo, nFilas[i], 0);
         
-        dtmTabla.setValueAt(nombre, nFilas[i] - 1, 1);
+        dtmTabla.setValueAt(nombre, nFilas[i], 1);
         
         int cantidad1 = Integer.parseInt(cantidad);
-        dtmTabla.setValueAt(cantidad1, nFilas[i] - 1, 2);
+        dtmTabla.setValueAt(cantidad1, nFilas[i], 2);
         
         double precio1 = Double.parseDouble(precio);        
-        dtmTabla.setValueAt(precio1, nFilas[i]-1, 3);
+        dtmTabla.setValueAt(precio1, nFilas[i], 3);
         
         //Se calcula el total
         double total = cantidad1 * precio1;
-        dtmTabla.setValueAt(total, nFilas[i]-1, 4);
+        dtmTabla.setValueAt(total, nFilas[i], 4);
         total_V += total;
         txtTotal_V.setText(total_V+"");
         
@@ -547,6 +574,7 @@ public class Panel_Nueva_Venta extends JPanel{
     private JLabel lblNumero_Cl;
     private JLabel lblTotal_V;
     private JLabel lblTitulo;
+
 //    private JLabel lblTitulo;
     private JTextField txtCodigo_V;
     private JTextField txtNumero_Cl;

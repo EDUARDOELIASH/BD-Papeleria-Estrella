@@ -170,12 +170,20 @@ public class Papeleria extends JApplet implements ActionListener{
             }
         }
         if (e.getSource() == m_n_Compra){
-            Panel_Nueva_Compra panel = new Panel_Nueva_Compra();
-            llamarPanel(panel);
+            try {
+                Panel_Nueva_Compra panel = new Panel_Nueva_Compra(con);
+                llamarPanel(panel);
+            } catch (SQLException ex) {
+                Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         if (e.getSource() == m_nD_Servicios){
-            Panel_Nueva_Compra panel = new Panel_Nueva_Compra();
-            llamarPanel(panel);
+            try {
+                Panel_Nueva_Compra panel = new Panel_Nueva_Compra(con);
+                llamarPanel(panel);
+            } catch (SQLException ex) {
+                Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         if(e.getSource() == m_nD_Productos){
             try {
