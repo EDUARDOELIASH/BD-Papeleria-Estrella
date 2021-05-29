@@ -1,5 +1,7 @@
 package Ventana;
 
+import Panels_menu_principal.Panel_Consulta_Datos;
+import Panels_menu_principal.Panel_Consulta_Ventas;
 import Panels_menu_principal.Panel_Nueva_Compra;
 import Panels_menu_principal.Panel_Nueva_Venta;
 import Panels_menu_principal.Panel_Nuevos_Datos;
@@ -41,6 +43,7 @@ public class Papeleria extends JApplet implements ActionListener{
         JP_Tablas = new JPanel();
         JP_Botones = new JPanel();
         jspPanel  = new JScrollPane();
+        
         //Menu de Opciones
         mb=new JMenuBar();
         
@@ -73,6 +76,11 @@ public class Papeleria extends JApplet implements ActionListener{
         m_nD_Clientes = new JMenuItem("Clientes");
         m_nD_Proveedores = new JMenuItem("Proveedores");
         
+        m_cD_Productos = new JMenuItem("Productos");
+        m_cD_Servicios = new JMenuItem("Servicios");
+        m_cD_Clientes = new JMenuItem("Clientes");
+        m_cD_Proveedores = new JMenuItem("Proveedores");
+        
         m_aP_Telefono = new JMenuItem("Numero de Telefono");
         m_aP_Direccion = new JMenuItem("Direccion");
         
@@ -98,6 +106,11 @@ public class Papeleria extends JApplet implements ActionListener{
         m_nD_Servicios.addActionListener(this);
         m_nD_Clientes.addActionListener(this);
         m_nD_Proveedores.addActionListener(this);
+        
+        m_cD_Productos.addActionListener(this);
+        m_cD_Servicios.addActionListener(this);
+        m_cD_Clientes.addActionListener(this);
+        m_cD_Proveedores.addActionListener(this);
         
         m_aP_Telefono.addActionListener(this);
         m_aP_Direccion.addActionListener(this);
@@ -126,6 +139,12 @@ public class Papeleria extends JApplet implements ActionListener{
         m_n_Dato.add(m_nD_Servicios);
         m_n_Dato.add(m_nD_Clientes);
         m_n_Dato.add(m_nD_Proveedores);
+        
+        //Consulta - Datos
+        m_c_Datos.add(m_cD_Productos);
+        m_c_Datos.add(m_cD_Servicios);
+        m_c_Datos.add(m_cD_Clientes);
+        m_c_Datos.add(m_cD_Proveedores);
         
         //Actualizar - Proveedor
         m_a_Proveedor.add(m_aP_Telefono);
@@ -169,10 +188,10 @@ public class Papeleria extends JApplet implements ActionListener{
             Panel_Nueva_Compra panel = new Panel_Nueva_Compra();
             llamarPanel(panel);
         }
-        if (e.getSource() == m_nD_Servicios){
+        /*if (e.getSource() == m_nD_Servicios){
             Panel_Nueva_Compra panel = new Panel_Nueva_Compra();
             llamarPanel(panel);
-        }
+        }*/
         if(e.getSource() == m_nD_Productos){
             //Permitir guardar el panel (future feature)
             Panel_Nuevos_Datos panel = new Panel_Nuevos_Datos("Nuevo_Producto", con); 
@@ -189,6 +208,29 @@ public class Papeleria extends JApplet implements ActionListener{
         if (e.getSource() == m_nD_Proveedores){
             Panel_Nuevos_Datos panel = new Panel_Nuevos_Datos("Nuevo_Proveedor", con);
             llamarPanel(panel.pPrincipal);
+        }
+        //CONSULTA
+        if(e.getSource() == m_cD_Productos){
+            //Permitir guardar el panel (future feature)
+            Panel_Consulta_Datos panel = new Panel_Consulta_Datos("Consultar_Producto", con); 
+            llamarPanel(panel.pPrincipal);
+        }
+        if (e.getSource() == m_cD_Servicios){
+            Panel_Consulta_Datos panel = new Panel_Consulta_Datos("Consultar_Servicio", con);
+            llamarPanel(panel.pPrincipal);
+        }
+        if (e.getSource() == m_cD_Clientes){
+            Panel_Consulta_Datos panel = new Panel_Consulta_Datos("Consultar_Cliente", con);
+            llamarPanel(panel.pPrincipal);
+        }
+        if (e.getSource() == m_cD_Proveedores){
+            Panel_Consulta_Datos panel = new Panel_Consulta_Datos("Consultar_Proveedor", con);
+            llamarPanel(panel.pPrincipal);
+        }
+        //Productos y Ventas
+        if (e.getSource() == m_c_Ventas){
+            Panel_Consulta_Ventas panel = new Panel_Consulta_Ventas(con);
+            llamarPanel(panel);
         }
         if (e.getSource() == m_s_Cerrar){
             try {
@@ -284,6 +326,11 @@ public class Papeleria extends JApplet implements ActionListener{
     private JMenuItem m_nD_Servicios;
     private JMenuItem m_nD_Clientes;
     private JMenuItem m_nD_Proveedores;
+    
+    private JMenuItem m_cD_Productos;
+    private JMenuItem m_cD_Servicios;
+    private JMenuItem m_cD_Clientes;
+    private JMenuItem m_cD_Proveedores;
     
     private JMenuItem m_aP_Telefono;
     private JMenuItem m_aP_Direccion;
