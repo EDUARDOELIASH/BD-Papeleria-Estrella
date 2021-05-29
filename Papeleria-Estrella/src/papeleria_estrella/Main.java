@@ -1,13 +1,7 @@
 package papeleria_estrella;
 
-import Ventana.Inicio_sesion;
 import Ventana.Login;
-import Ventana.Papeleria;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import javax.swing.JOptionPane;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

@@ -181,33 +181,58 @@ public class Papeleria extends JApplet implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == m_n_Venta){
-            Panel_Nueva_Venta panel = new Panel_Nueva_Venta(con);
-            llamarPanel(panel);
+            try {
+                Panel_Nueva_Venta panel = new Panel_Nueva_Venta(con, m_nD_Clientes);
+                llamarPanel(panel);
+            } catch (SQLException ex) {
+                Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         if (e.getSource() == m_n_Compra){
-            Panel_Nueva_Compra panel = new Panel_Nueva_Compra();
-            llamarPanel(panel);
-        }
+            try {
+                Panel_Nueva_Compra panel = new Panel_Nueva_Compra(con);
+                llamarPanel(panel);
+            } catch (SQLException ex) {
+                Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }      
         /*if (e.getSource() == m_nD_Servicios){
             Panel_Nueva_Compra panel = new Panel_Nueva_Compra();
             llamarPanel(panel);
         }*/
+
         if(e.getSource() == m_nD_Productos){
-            //Permitir guardar el panel (future feature)
-            Panel_Nuevos_Datos panel = new Panel_Nuevos_Datos("Nuevo_Producto", con); 
-            llamarPanel(panel.pPrincipal);
+            try {
+                //Permitir guardar el panel (future feature)
+                Panel_Nuevos_Datos panel = new Panel_Nuevos_Datos("Nuevo_Producto", con, m_nD_Productos);
+                llamarPanel(panel.pPrincipal);
+            } catch (SQLException ex) {
+                Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         if (e.getSource() == m_nD_Servicios){
-            Panel_Nuevos_Datos panel = new Panel_Nuevos_Datos("Nuevo_Servicio", con);
-            llamarPanel(panel.pPrincipal);
+            try {
+                Panel_Nuevos_Datos panel = new Panel_Nuevos_Datos("Nuevo_Servicio", con, m_nD_Servicios);
+                llamarPanel(panel.pPrincipal);
+            } catch (SQLException ex) {
+                Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         if (e.getSource() == m_nD_Clientes){
-            Panel_Nuevos_Datos panel = new Panel_Nuevos_Datos("Nuevo_Cliente", con);
-            llamarPanel(panel.pPrincipal);
+            try {
+                Panel_Nuevos_Datos panel = new Panel_Nuevos_Datos("Nuevo_Cliente", con, m_nD_Clientes);
+                llamarPanel(panel.pPrincipal);
+            } catch (SQLException ex) {
+                Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         if (e.getSource() == m_nD_Proveedores){
-            Panel_Nuevos_Datos panel = new Panel_Nuevos_Datos("Nuevo_Proveedor", con);
-            llamarPanel(panel.pPrincipal);
+            try {
+                Panel_Nuevos_Datos panel = new Panel_Nuevos_Datos("Nuevo_Proveedor", con, m_nD_Proveedores);
+                llamarPanel(panel.pPrincipal);
+            } catch (SQLException ex) {
+                Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         //CONSULTA
         if(e.getSource() == m_cD_Productos){

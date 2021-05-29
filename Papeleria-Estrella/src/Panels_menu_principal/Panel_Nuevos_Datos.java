@@ -14,6 +14,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
@@ -22,8 +24,10 @@ import javax.swing.table.DefaultTableModel;
  * @author Eduardo Elias Hernandez Moreno
  */
 public class Panel_Nuevos_Datos{
+    JMenuItem menuItem;
     
-    public Panel_Nuevos_Datos (String nombre_Panel, Connection con){   
+    public Panel_Nuevos_Datos (String nombre_Panel, Connection con, JMenuItem menuItem) throws SQLException{   
+        this.menuItem = menuItem;
         this.con = con;
         nFilas = 1;
         if (nombre_Panel.equals("Nuevo_Producto")){
@@ -66,19 +70,23 @@ public class Panel_Nuevos_Datos{
         //Consultar numero de ultimo cliente
         
         final String[] vector = {null, null, null};
-        //JTable
-        tTabla.setModel(new javax.swing.table.DefaultTableModel(
+        final DefaultTableModel newModelo = new DefaultTableModel(
             new Object [][] {
-                vector,
+                vector
             },
             new String [] {
                 "Codigo_P", "Nombre_P", "Precio_P"
             }
-        ));
-
+        );
+         
+        
+        final DefaultTableModel dtmTable = newModelo;
+        
+        //JTable
+        tTabla.setModel(dtmTable);
+        tTabla.setFocusable(false); 
         jScrollPane1.setViewportView(tTabla);
-
-        final javax.swing.table.DefaultTableModel dtmTable = (DefaultTableModel) tTabla.getModel();
+ 
 
         //Botones
         btnRegistrar.setText("Registrar");
@@ -88,14 +96,15 @@ public class Panel_Nuevos_Datos{
                 for (int i = 0; i < nFilas; i++) {
                     String sql = "INSERT INTO producto VALUES('"+ dtmTable.getValueAt(i, 0)+"','"+ dtmTable.getValueAt(i, 1)+"',"+ 0 +","+dtmTable.getValueAt(i, 2)+")";
                     //Verificar datos de tabla
-
+                    
                     try {
-                        btnRegistrarActionPerformed(e, con, sql);
+                        btnRegistrarActionPerformed(con, sql);
                     } catch (SQLException ex) {
                         Logger.getLogger(Panel_Nuevos_Datos.class.getName()).log(Level.SEVERE, null, ex);
                     }               
                 }
-                
+                JOptionPane.showMessageDialog(null, "Registro de productos exitoso");
+                menuItem.doClick();
             }
         });
 
@@ -107,7 +116,7 @@ public class Panel_Nuevos_Datos{
                 btnNuevaFilaActionPerformed(e, dtmTable, vector);
             }
         });
-
+        
 
         //Paneles
         panel.setLayout(new java.awt.BorderLayout());
@@ -157,6 +166,7 @@ public class Panel_Nuevos_Datos{
                 "Codigo_S", "Nombre_S", "Precio_S"
             }
         ));
+        tTabla.setFocusable(false);
 
         jScrollPane1.setViewportView(tTabla);
         
@@ -171,11 +181,13 @@ public class Panel_Nuevos_Datos{
                     //Verificar datos de tabla
 
                     try {
-                        btnRegistrarActionPerformed(e, con, sql);
+                        btnRegistrarActionPerformed(con, sql);
                     } catch (SQLException ex) {
                         Logger.getLogger(Panel_Nuevos_Datos.class.getName()).log(Level.SEVERE, null, ex);
                     }               
                 }
+                JOptionPane.showMessageDialog(null, "Registro de servicios exitoso");
+                menuItem.doClick();
             }
         });
 
@@ -208,7 +220,7 @@ public class Panel_Nuevos_Datos{
     }
 
     //Panel Nuevo_Cliente
-    private JPanel PNuevo_Cliente (){
+    private JPanel PNuevo_Cliente () throws SQLException{
         JPanel panel = new JPanel();    
         
         lblTitulo = new JLabel();
@@ -224,10 +236,12 @@ public class Panel_Nuevos_Datos{
         lblTitulo.setText("           Nuevo Cliente");
         lblEspacio1.setText("           ");
         lblEspacio2.setText("           ");
-
+        
+       
         //Consultar numero de ultimo cliente
- 
+        final boolean[] editable = {false, true, true};
         final String[] vector = {null, null, null};
+        
         //JTable
         tTabla.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -236,26 +250,40 @@ public class Panel_Nuevos_Datos{
             new String [] {
                 "Numero_Cl", "Nombre_Cl", "Telefono_Cl"
             }
-        ));
-
+        ){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return editable[column];
+            }
+        });
+        tTabla.setFocusable(false);
+        
         jScrollPane1.setViewportView(tTabla);
         
-        final javax.swing.table.DefaultTableModel dtmTable = (DefaultTableModel) tTabla.getModel();
+        final javax.swing.table.DefaultTableModel dtmTabla = (DefaultTableModel) tTabla.getModel();
+        final int Numero_Cl = consultarU_Numero_Cl(con);
+        dtmTabla.setValueAt(Numero_Cl, nFilas-1, 0);
+        
+        
+        
         //Botones
         btnRegistrar.setText("Registrar");
         btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
+            //Falta validar datos
             @Override
             public void actionPerformed(ActionEvent e) {
-                for (int i = 0; i < nFilas; i++) {
-                    String sql = "INSERT INTO cliente(Nombre_Cl, Telefono_Cl) VALUES('"+ dtmTable.getValueAt(i, 1)+"','"+dtmTable.getValueAt(i, 2)+"')";
-                    //Verificar datos de tabla
-
+                for (int i = 0; i < nFilas; i++){
+                    
                     try {
-                        btnRegistrarActionPerformed(e, con, sql);
+                        String sql = "INSERT INTO cliente VALUES("+dtmTabla.getValueAt(i, 0)+",'"+ dtmTabla.getValueAt(i, 1)+"','"+dtmTabla.getValueAt(i, 2)+"')";
+                        //Verificar datos de tabla
+                        btnRegistrarActionPerformed(con, sql);
                     } catch (SQLException ex) {
                         Logger.getLogger(Panel_Nuevos_Datos.class.getName()).log(Level.SEVERE, null, ex);
-                    }               
+                    }
                 }
+                JOptionPane.showMessageDialog(null, "Registro de clientes exitoso");
+                menuItem.doClick();
             }
         });
 
@@ -264,7 +292,9 @@ public class Panel_Nuevos_Datos{
         btnNuevaFila.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                btnNuevaFilaActionPerformed(e, dtmTable, vector);
+                btnNuevaFilaActionPerformed(e, dtmTabla, vector);
+                final int newNumero_Cl = Numero_Cl + nFilas-1;
+                dtmTabla.setValueAt(newNumero_Cl, nFilas-1, 0);
             }
         });
         
@@ -317,6 +347,7 @@ public class Panel_Nuevos_Datos{
                 "Codigo_Pro", "Nombre_Pro", "No_Telefono_Pro", "Direccion_Pro"
             }
         ));
+        tTabla.setFocusable(false);
 
         jScrollPane1.setViewportView(tTabla);
         
@@ -327,18 +358,18 @@ public class Panel_Nuevos_Datos{
             @Override
             public void actionPerformed(ActionEvent e) {
                 for (int i = 0; i < nFilas; i++) {
-                    String sql = "INSERT INTO proveedor VALUES('"+ dtmTable.getValueAt(i, 0)+"','"+ dtmTable.getValueAt(i, 1)+"','"+dtmTable.getValueAt(i, 2)+"')";
-                    //Verificar datos de tabla
-
                     try {
-                        btnRegistrarActionPerformed(e, con, sql);
+                        String sql = "INSERT INTO proveedor VALUES('"+ dtmTable.getValueAt(i, 0)+"','"+ dtmTable.getValueAt(i, 1)+"','"+dtmTable.getValueAt(i, 2)+"','"+dtmTable.getValueAt(i, 3)+"')";
+                        //Verificar datos de tabla
+                        btnRegistrarActionPerformed(con, sql);
                     } catch (SQLException ex) {
                         Logger.getLogger(Panel_Nuevos_Datos.class.getName()).log(Level.SEVERE, null, ex);
-                    }               
+                    }
                 }
+                JOptionPane.showMessageDialog(null, "Registro de proveedores exitoso");
+                menuItem.doClick();
             }
         });
-
 
         btnNuevaFila.setText("Nueva Fila");
         btnNuevaFila.addActionListener(new java.awt.event.ActionListener() {
@@ -367,21 +398,41 @@ public class Panel_Nuevos_Datos{
         return panel;
     }
      
-    private void btnNuevaFilaActionPerformed (java.awt.event.ActionEvent evt, javax.swing.table.DefaultTableModel dtmTable, String[] vector){       
-        dtmTable.addRow(vector);
+    private int consultarU_Numero_Cl (Connection con) throws SQLException{
+        String sql = "SELECT * FROM ultimas_claves_secuenciales"; 
+        int Numero_Cl = 0;
+        
+        try (Statement st = con.createStatement()) {
+            ResultSet rs = st.executeQuery(sql);
+            
+            while(rs.next()){
+                Numero_Cl = rs.getInt("Numero_Cl");
+            }
+            rs.close();
+            st.close();
+        }
+        
+        return Numero_Cl+1;
+    }
+    
+    private void btnNuevaFilaActionPerformed (java.awt.event.ActionEvent evt, javax.swing.table.DefaultTableModel dtmTabla, String[] vector){       
+        dtmTabla.addRow(vector);
         nFilas ++;
     }
     
-    private void btnRegistrarActionPerformed (java.awt.event.ActionEvent evt, Connection con, String sql) throws SQLException{
+    //Validar datos
+    private void btnRegistrarActionPerformed (Connection con, String sql) throws SQLException{
         try (Statement statement = con.createStatement()) {
             statement.executeUpdate(sql);   
         }
-    }
+        
+        
+    }   
     
     // Variables declaration - do not modify
     private Connection con;
     private int nFilas;
-    
+   
     private JLabel lblEspacio1;
     private JLabel lblEspacio2;
     private javax.swing.JScrollPane jScrollPane1;
@@ -391,6 +442,5 @@ public class Panel_Nuevos_Datos{
     private JPanel pSur;
     private JButton btnNuevaFila;
     private JButton btnRegistrar;
-    private int ultimo_Cliente;
     // End of variables declaration   
 }
