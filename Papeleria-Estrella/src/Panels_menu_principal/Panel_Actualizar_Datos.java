@@ -23,31 +23,31 @@ import papeleria_estrella.Conectar;
  *
  * @author Eduardo Elias Hernandez Moreno
  */
-public class Panel_Consulta_Datos{
+public class Panel_Actualizar_Datos{
     
-    public Panel_Consulta_Datos (String nombre_Panel, Connection con){   
+    public Panel_Actualizar_Datos (String nombre_Panel, Connection con){   
         this.con = con;
         nFilas = 1;
-        if (nombre_Panel.equals("Consultar_Producto")){
-            pPrincipal = PConsultar_Producto();
+        if (nombre_Panel.equals("Actualizar_Precio_P")){
+            pPrincipal = PActualizar_Producto();
             btnNuevaFila.doClick();
             btnRegistrar.doClick();
         }
         else{
-            if (nombre_Panel.equals("Consultar_Servicio")){
-                pPrincipal = PConsultar_Servicio();
+            if (nombre_Panel.equals("Actualizar_Precio_S")){
+                pPrincipal = PActualizar_Servicio();
                 btnNuevaFila.doClick();
                 btnRegistrar.doClick();
             }
             else{
-                if (nombre_Panel.equals("Consultar_Cliente")){
-                    pPrincipal = PConsultar_Cliente();
+                if (nombre_Panel.equals("Actualizar_Numero_Tel_Cl")){
+                    pPrincipal = PActualizar_Cliente();
                     btnNuevaFila.doClick();
                     btnRegistrar.doClick();
                 }
                 else {
-                    if (nombre_Panel.equals("Consultar_Proveedor")){
-                        pPrincipal = PConsultar_Proveedor();
+                    if (nombre_Panel.equals("Actualizar_Proveedor")){
+                        pPrincipal = PActualizar_Proveedor();
                         btnNuevaFila.doClick();
                         btnRegistrar.doClick();
                     }
@@ -56,8 +56,9 @@ public class Panel_Consulta_Datos{
         }
     }
     
-    private JPanel PConsultar_Producto (){
+    private JPanel PActualizar_Producto (){
         JPanel panel = new JPanel();
+        final boolean[] editable = {false, false, true};
         
         lblTitulo = new JLabel();
         pSur = new JPanel();
@@ -69,7 +70,7 @@ public class Panel_Consulta_Datos{
         btnNuevaFila = new JButton();
         
         //labels
-        lblTitulo.setText("           Consultar Producto");
+        lblTitulo.setText("           Actualizar precio de Producto");
         lblEspacio1.setText("           ");
         lblEspacio2.setText("           ");
 
@@ -84,8 +85,13 @@ public class Panel_Consulta_Datos{
             new String [] {
                 "Codigo_P", "Nombre_P", "Precio_P"
             }
-        ));
-        tTabla.enable(false);
+        ){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return editable[column];
+            }
+        });
+        
         jScrollPane1.setViewportView(tTabla);
 
         final javax.swing.table.DefaultTableModel dtmTable = (DefaultTableModel) tTabla.getModel();
@@ -103,7 +109,7 @@ public class Panel_Consulta_Datos{
                     sentencia=(Statement) con.createStatement();
                     rs=sentencia.executeQuery(sql);
                 } catch (SQLException ex) { 
-                    Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 for (int i = 0; i < nFilas; i++) {   
                     try {
@@ -112,6 +118,13 @@ public class Panel_Consulta_Datos{
                             dtmTable.setValueAt(rs.getString("Nombre_P"), i, 1);
                             dtmTable.setValueAt(rs.getDouble("Precio_P"), i, 2);
                         }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
+                  /* Verificar datos de tabla
+                    try {
+                        btnRegistrarActionPerformed(e, con, sql);
                     } catch (SQLException ex) {
                         Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -145,7 +158,7 @@ public class Panel_Consulta_Datos{
                         btnNuevaFilaActionPerformed(e, dtmTable, vector); 
                     }
                 } catch (SQLException ex) { 
-                    Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -170,8 +183,9 @@ public class Panel_Consulta_Datos{
         return panel;
     }
     
-    private JPanel PConsultar_Servicio (){
+    private JPanel PActualizar_Servicio (){
         JPanel panel = new JPanel();
+        final boolean[] editable = {false, false, true};
         
         lblTitulo = new JLabel();
         pSur = new JPanel();
@@ -183,7 +197,7 @@ public class Panel_Consulta_Datos{
         btnNuevaFila = new JButton();
         
         //labels
-        lblTitulo.setText("           Consultar Servicio");
+        lblTitulo.setText("           Actualizar precio de servicio");
         lblEspacio1.setText("           ");
         lblEspacio2.setText("           ");
 
@@ -198,8 +212,13 @@ public class Panel_Consulta_Datos{
             new String [] {
                 "Codigo_S", "Nombre_S", "Precio_S"
             }
-        ));
-        tTabla.enable(false);
+        ){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return editable[column];
+            }
+        });
+        
         jScrollPane1.setViewportView(tTabla);
         
         final javax.swing.table.DefaultTableModel dtmTable = (DefaultTableModel) tTabla.getModel();
@@ -216,7 +235,7 @@ public class Panel_Consulta_Datos{
                     sentencia=(Statement) con.createStatement();
                     rs=sentencia.executeQuery(sql);
                 } catch (SQLException ex) { 
-                    Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 for (int i = 0; i < nFilas; i++) {   
                     try {
@@ -226,7 +245,7 @@ public class Panel_Consulta_Datos{
                             dtmTable.setValueAt(rs.getDouble("Precio_S"), i, 2);
                         }
                     } catch (SQLException ex) {
-                        Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -250,7 +269,7 @@ public class Panel_Consulta_Datos{
                         btnNuevaFilaActionPerformed(e, dtmTable, vector); 
                     }
                 } catch (SQLException ex) { 
-                    Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -275,7 +294,7 @@ public class Panel_Consulta_Datos{
     }
 
     //Panel Nuevo_Cliente
-    private JPanel PConsultar_Cliente (){
+    private JPanel PActualizar_Cliente (){
         JPanel panel = new JPanel();    
         
         lblTitulo = new JLabel();
@@ -288,7 +307,7 @@ public class Panel_Consulta_Datos{
         btnNuevaFila = new JButton();
 
         //labels
-        lblTitulo.setText("           Consultar Cliente");
+        lblTitulo.setText("           Nuevo Cliente");
         lblEspacio1.setText("           ");
         lblEspacio2.setText("           ");
 
@@ -304,7 +323,7 @@ public class Panel_Consulta_Datos{
                 "Numero_Cl", "Nombre_Cl", "Telefono_Cl"
             }
         ));
-        tTabla.enable(false);
+        
         jScrollPane1.setViewportView(tTabla);
         
         final javax.swing.table.DefaultTableModel dtmTable = (DefaultTableModel) tTabla.getModel();
@@ -320,7 +339,7 @@ public class Panel_Consulta_Datos{
                     sentencia=(Statement) con.createStatement();
                     rs=sentencia.executeQuery(sql);
                 } catch (SQLException ex) { 
-                    Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 for (int i = 0; i < nFilas; i++) {   
                     try {
@@ -330,7 +349,7 @@ public class Panel_Consulta_Datos{
                             dtmTable.setValueAt(rs.getString("Telefono_Cl"), i, 2);
                         }
                     } catch (SQLException ex) {
-                        Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -354,7 +373,7 @@ public class Panel_Consulta_Datos{
                         btnNuevaFilaActionPerformed(e, dtmTable, vector); 
                     }
                 } catch (SQLException ex) { 
-                    Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -378,7 +397,7 @@ public class Panel_Consulta_Datos{
         return panel;
     }
     
-    private JPanel PConsultar_Proveedor (){
+    private JPanel PActualizar_Proveedor (){
         JPanel panel = new JPanel();
         
         pPrincipal = new JPanel();
@@ -392,7 +411,7 @@ public class Panel_Consulta_Datos{
         btnNuevaFila = new JButton();
 
         //labels
-        lblTitulo.setText("           Consultar Proveedor");
+        lblTitulo.setText("           Nuevo Proveedor");
         lblEspacio1.setText("           ");
         lblEspacio2.setText("           ");
 
@@ -408,7 +427,7 @@ public class Panel_Consulta_Datos{
                 "Codigo_Pro", "Nombre_Pro", "No_Telefono_Pro", "Direccion_Pro"
             }
         ));
-        tTabla.enable(false);
+        
         jScrollPane1.setViewportView(tTabla);
         
         final javax.swing.table.DefaultTableModel dtmTable = (DefaultTableModel) tTabla.getModel();
@@ -424,7 +443,7 @@ public class Panel_Consulta_Datos{
                     sentencia=(Statement) con.createStatement();
                     rs=sentencia.executeQuery(sql);
                 } catch (SQLException ex) { 
-                    Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 for (int i = 0; i < nFilas; i++) {   
                     try {
@@ -435,7 +454,7 @@ public class Panel_Consulta_Datos{
                             dtmTable.setValueAt(rs.getString("Direccion_Pro"), i, 3);
                         }
                     } catch (SQLException ex) {
-                        Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -459,7 +478,7 @@ public class Panel_Consulta_Datos{
                         btnNuevaFilaActionPerformed(e, dtmTable, vector); 
                     }
                 } catch (SQLException ex) { 
-                    Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });

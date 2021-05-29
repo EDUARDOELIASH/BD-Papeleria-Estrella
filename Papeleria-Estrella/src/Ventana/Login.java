@@ -110,7 +110,7 @@ public class Login extends JApplet implements ActionListener {
                 con = conectar.getConection(usuario, password);
 
                 if (con!=null){
-                    JOptionPane.showMessageDialog(null, "Conexion exitosa"); 
+                    JOptionPane.showMessageDialog(null, "Bienvenido! "+ usuario); 
                     JF_Estadisticas.dispose();
                     Papeleria ventana = new Papeleria(con);
                 }

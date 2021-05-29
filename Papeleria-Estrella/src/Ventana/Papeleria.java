@@ -1,5 +1,6 @@
 package Ventana;
 
+import Panels_menu_principal.Panel_Actualizar_Datos;
 import Panels_menu_principal.Panel_Consulta_Datos;
 import Panels_menu_principal.Panel_Consulta_Ventas;
 import Panels_menu_principal.Panel_Nueva_Compra;
@@ -32,17 +33,12 @@ public class Papeleria extends JApplet implements ActionListener{
         //1.Creamos el Formulario
         JF_Estadisticas = new JFrame();
         JF_Estadisticas.setTitle("Papeleria la estrella");
-        JF_Estadisticas.setSize(515, 450);
+        JF_Estadisticas.setSize(600, 500);
         JF_Estadisticas.setLayout(new BorderLayout());
         
         //2.Agregar los paneles para distribucion
         JP_Central = new JPanel();
-        JP_Reporte = new JPanel();
-        JP_DatosGen = new JPanel();
-        JP_Datos = new JPanel();
-        JP_Tablas = new JPanel();
-        JP_Botones = new JPanel();
-        jspPanel  = new JScrollPane();
+        jspPanel = new JScrollPane();
         
         //Menu de Opciones
         mb=new JMenuBar();
@@ -139,6 +135,9 @@ public class Papeleria extends JApplet implements ActionListener{
         m_n_Dato.add(m_nD_Servicios);
         m_n_Dato.add(m_nD_Clientes);
         m_n_Dato.add(m_nD_Proveedores);
+        m_Inicio = new JMenuItem();
+        m_Inicio.setText("Inicio");
+        m_Principal.add(m_Inicio);
         
         //Consulta - Datos
         m_c_Datos.add(m_cD_Productos);
@@ -155,22 +154,7 @@ public class Papeleria extends JApplet implements ActionListener{
         mb.add(m_Consultar);
         mb.add(m_Actualizar);
         mb.add(m_Sesion);
-        /*
-        menu1=new JMenu("Calcular");
-        mb.add(menu1);
-            mi1=new JMenuItem("Sueldos");
-            mi1.addActionListener(this);
-         menu1.add(mi1);
-            mi2=new JMenuItem("Nomina");
-            mi2.addActionListener(this);
-        menu1.add(mi2); 
-            menu2=new JMenuItem("Limpiar");
-            menu2.addActionListener(this);
-        mb.add(menu2);
-            menu3=new JMenuItem("Salir");
-            menu3.addActionListener(this);
-        mb.add(menu3);  
-        */
+        
    //8. Mostramos interfaz
         JF_Estadisticas.setJMenuBar(mb);
         JF_Estadisticas.setLocationRelativeTo(null);
@@ -267,6 +251,33 @@ public class Papeleria extends JApplet implements ActionListener{
             }
             JF_Estadisticas.dispose();            
         }
+        if (e.getSource() == m_Inicio){
+            try {
+                //Cerrar conexion a base de datos
+                //Agregar JOptionPane para confirmar cerrar conexion
+                con.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            JF_Estadisticas.dispose(); 
+            Login sesion = new Login();
+        }
+        if (e.getSource() == m_a_Productos){
+            Panel_Actualizar_Datos panel = new Panel_Actualizar_Datos("Actualizar_Precio_P", con);
+            llamarPanel(panel.pPrincipal);
+        }
+        if (e.getSource() == m_a_Servicios){
+            Panel_Actualizar_Datos panel = new Panel_Actualizar_Datos("Actualizar_Precio_S", con);
+            llamarPanel(panel.pPrincipal);
+        }
+        if (e.getSource() == m_a_Cliente){
+            Panel_Actualizar_Datos panel = new Panel_Actualizar_Datos("Actualizar_Numero_Tel_Cl", con);
+            llamarPanel(panel.pPrincipal);
+        }
+        if (e.getSource() == m_Inicio){
+            JF_Estadisticas.remove(jspPanel);
+        }
+        
     }   
     
     private void llamarPanel(final JPanel panel){
@@ -301,6 +312,7 @@ public class Papeleria extends JApplet implements ActionListener{
                     JF_Estadisticas.remove(jspPanel);
                     
                     JP_Central = panel;
+                    
                     jspPanel.setViewportView(panel);
                     JF_Estadisticas.add(jspPanel, BorderLayout.CENTER);
                     JF_Estadisticas.repaint();
@@ -314,12 +326,8 @@ public class Papeleria extends JApplet implements ActionListener{
     private DecimalFormat df;
     private JFrame JF_Estadisticas;
 	
+    
     private JPanel JP_Central;
-    private JPanel JP_DatosGen;
-    private JPanel JP_Datos;
-    private JPanel JP_Tablas;
-    private JPanel JP_Reporte; 
-    private JPanel JP_Botones;
     
     //JScrollPane1.setViewportView(lstEstadistica);
 
@@ -330,6 +338,7 @@ public class Papeleria extends JApplet implements ActionListener{
     private JMenu m_Actualizar;
     private JMenu m_Sesion;
     
+    private JMenuItem m_Inicio;
     private JMenu m_n_Dato;
     private JMenuItem m_n_Venta;
     private JMenuItem m_n_Compra;
