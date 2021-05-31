@@ -11,7 +11,7 @@ import java.sql.SQLException;
 
 /**
  *
- * @author eddy-
+ * @author Eduardo Elias Hernandez Moreno
  */
 
 public class Main {

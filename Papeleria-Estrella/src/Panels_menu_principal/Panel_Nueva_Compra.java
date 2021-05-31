@@ -38,7 +38,7 @@ public class Panel_Nueva_Compra extends JPanel{
     public Panel_Nueva_Compra (Connection con) throws SQLException{
         this.con = con;
         
-        i = 0;
+        nProveedores = 0;
         String[] vector = {null,null,null,null,null,null};
         initComponents(vector);
         fProveedor = fNombre_proveedor(vector);
@@ -46,6 +46,7 @@ public class Panel_Nueva_Compra extends JPanel{
     
     private void initComponents(final String[] vector) throws SQLException{
         cbProdutos = new JComboBox();
+        nFilas = 0;
         
         codigos_Pro = new ArrayList<String>();
         fProveedor = new JFrame();
@@ -72,6 +73,22 @@ public class Panel_Nueva_Compra extends JPanel{
         });
         
         btnRegistrar.setText("Registrar compra");
+        
+        btnRegistrar.addActionListener(new java.awt.event.ActionListener(){
+            @Override
+            public void actionPerformed (ActionEvent e){
+                for (int i = 0; i<nFilas; i++){
+                //    for (int j = 0; j < nFilas[i]; j++){
+                        JTable tabla = (JTable) sptNueva_Compra.get(0).getViewport().getComponent(0);
+                        DefaultTableModel modelo = (DefaultTableModel)tabla.getModel();
+                        //System.out.println("CALL Nueva_Compra('"+modelo.getValueAt(0, 0)+"', '"+codigos_Pro.get(0)+"', '2021-05-30', "+modelo.getValueAt(0, 3)+", "+modelo.getValueAt(0,4)+", 0)");
+                        String sql = "CALL Nueva_Compra('"+modelo.getValueAt(0, 0)+"', '"+codigos_Pro.get(0)+"', '2021-05-30', "+modelo.getValueAt(0, 3)+", "+modelo.getValueAt(0,4)+", 0)";
+                        btnRegistrarActionPerformed(sql);
+                        System.out.println("hola");
+                   // }
+                }
+            }
+        });
         
         //JPanel's
         /*Contenido de panel principal*/
@@ -242,6 +259,8 @@ public class Panel_Nueva_Compra extends JPanel{
         datos_Proveedor = new String[2];
         datos_Proveedor[0] = dtmProveedor.getValueAt(0, 0)+"";
         datos_Proveedor[1] = dtmProveedor.getValueAt(0, 1)+"";
+        Integer n = 0;
+        
         JPanel panel = new JPanel();
         JPanel pNORTH = new JPanel();
         btnNueva_fila = new JButton();
@@ -249,12 +268,14 @@ public class Panel_Nueva_Compra extends JPanel{
         btnNueva_fila.setText("+");
         
         final DefaultTableModel modelo = (DefaultTableModel) tNueva_compra.getModel();
-        
+        //nFilas.add(n);
         btnNueva_fila.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                btnNueva_FilaActionPerformed(modelo, vector, cbProdutos, tNueva_compra);
+                btnNueva_FilaActionPerformed(modelo, vector, cbProdutos, tNueva_compra, nProveedores);
+                nFilas++;
             }
+            
         });
         
         //JPaneles
@@ -263,19 +284,20 @@ public class Panel_Nueva_Compra extends JPanel{
         pNORTH.add(cbProdutos, BorderLayout.WEST);
         
         panel.setLayout(new BorderLayout());
-        panel.add(sptNueva_Compra.get(i),BorderLayout.CENTER);
+        panel.add(sptNueva_Compra.get(nProveedores),BorderLayout.CENTER);
         panel.add(pNORTH, BorderLayout.NORTH);
         
         tpCompras.addTab(datos_Proveedor[1], panel);
         codigos_Pro.add(datos_Proveedor[0]);
         
-        i++;
+        
+        nProveedores++;
         fProveedor.dispose();
         //Se guarda para registrar en base de datos
         
     }
     
-    private void btnNueva_FilaActionPerformed(DefaultTableModel modelo, String[] vector, JComboBox cb, JTable tabla){
+    private void btnNueva_FilaActionPerformed(DefaultTableModel modelo, String[] vector, JComboBox cb, JTable tabla, int nProveedores){
         String item = cb.getSelectedItem() + "";
         String codigo = "";
         String nombre = "";
@@ -297,10 +319,11 @@ public class Panel_Nueva_Compra extends JPanel{
         }
         tabla.getModel().setValueAt(codigo, 0, 0);
         tabla.getModel().setValueAt(nombre, 0, 1);
+        
         modelo.addRow(vector);
     }
     
-    private void btnNueva_compraActionPerformed(java.awt.event.ActionEvent evt, String[] vector){
+    private void btnNueva_compraActionPerformed (java.awt.event.ActionEvent evt, String[] vector){
         nuevaCompra(vector);
         fProveedor.setVisible(true);
         fProveedor.setLocationRelativeTo(null);
@@ -308,11 +331,24 @@ public class Panel_Nueva_Compra extends JPanel{
         //Limpiar ventana
     }
     
+    private void btnRegistrarActionPerformed (String sql){
+       try {
+            // TODO add your handling code here:
+            //Se registra todo en las tablas de las bases de datos
+            Statement st = con.createStatement();
+            st.executeUpdate(sql);
+            st.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Panel_Nueva_Venta.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     private Connection con;
     private ArrayList<String> codigos_Pro;
+    private int nFilas;
     private JComboBox cbProdutos;
       
-    private int i;
+    private int nProveedores;
     private String[] datos_Proveedor;
     private JFrame fProveedor;
     private JPanel pBotones;

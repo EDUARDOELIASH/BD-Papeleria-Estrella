@@ -151,7 +151,7 @@ public class Panel_Nueva_Venta extends JPanel{
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
-                    btnNuevo_ClienteActionPerformed(evt, con, menuItem);
+                    btnNuevo_ClienteActionPerformed(con, menuItem);
                 } catch (SQLException ex) {
                     Logger.getLogger(Panel_Nueva_Venta.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -173,14 +173,18 @@ public class Panel_Nueva_Venta extends JPanel{
                         if (Double.parseDouble(cadena) >= Double.parseDouble(txtTotal_V.getText())){
                             Date fecha = jdchFecha_V.getDate();
                             java.sql.Date date2 = new java.sql.Date(fecha.getTime());
+                            
+                            //validarDouble ();
         
                             System.out.println(date2);
-                            String sql1 = "CALL Nueva_Venta('"+txtCodigo_V.getText()+"', '"+ date2+"', "+txtTotal_V.getText()+", "+txtNumero_Cl.getText()+", "+Double.parseDouble(cadena)+")";
+                            String sql1 = "CALL Nueva_Venta('"+txtCodigo_V.getText()+"', '"+ date2+"', "+Double.parseDouble(txtTotal_V.getText())+", "+txtNumero_Cl.getText()+", "+Double.parseDouble(cadena)+")";
                             btnRegistrarActionPerformed(sql1); 
                             //Insert productos vendidos falta consultar precios en tabla consultar nombre p
                             if (nFilas[0] > 0){
                                 for (int i = 0; i<nFilas[0]; i++){  
-                                    String sql = "INSERT INTO producto_venta VALUES('"+txtCodigo_V.getText()+"','"+dtmProductos_V.getValueAt(i, 0)+"', "+dtmProductos_V.getValueAt(i, 2)+", "+1+", "+0+")";
+                                    String sql = "INSERT INTO producto_venta VALUES('"+txtCodigo_V.getText()+"','"+dtmProductos_V.getValueAt(i, 0)+"', "+dtmProductos_V.getValueAt(i, 2)+", "+1+", "+0+");";
+                                    btnRegistrarActionPerformed(sql); 
+                                    sql = "UPDATE producto_venta SET ExistenciaMod = 1 WHERE producto_venta.Codigo_P = '"+dtmProductos_V.getValueAt(i, 0)+"' AND producto_venta.Codigo_V = '"+txtCodigo_V.getText()+"';";
                                     btnRegistrarActionPerformed(sql); 
                                 }
                             }
@@ -519,13 +523,13 @@ public class Panel_Nueva_Venta extends JPanel{
             //Se registra todo en las tablas de las bases de datos
             Statement st = con.createStatement();
             st.executeUpdate(sql);
+            st.close();
         } catch (SQLException ex) {
             Logger.getLogger(Panel_Nueva_Venta.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
     }                                            
 
-    private void btnNuevo_ClienteActionPerformed(java.awt.event.ActionEvent evt, Connection con, JMenuItem menuItem) throws SQLException {                                                 
+    private void btnNuevo_ClienteActionPerformed(Connection con, JMenuItem menuItem) throws SQLException {                                                 
         // TODO add your handling code here:
         //Se abre panel pNuevo_Cliente
         Panel_Nuevos_Datos panel = new Panel_Nuevos_Datos("Nuevo_Cliente", con, menuItem);

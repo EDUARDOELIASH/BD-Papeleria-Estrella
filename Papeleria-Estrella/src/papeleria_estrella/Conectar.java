@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author felix
+ * @author Eduardo Elias Hernandez Moreno
  */
 public class Conectar {
     Connection con;
