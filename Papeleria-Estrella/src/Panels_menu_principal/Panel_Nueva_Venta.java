@@ -165,6 +165,7 @@ public class Panel_Nueva_Venta extends JPanel{
                 if (nFilas[0] > 0 || nFilas[1] > 0){
                     //Insert en tabla venta y cliente_venta
                     String cadena = JOptionPane.showInputDialog("Total = "+txtTotal_V.getText()+" \nDigite importe: ");
+                    
                     //crear metodo cadena to double
                     boolean importe_Val = false;
 
@@ -172,32 +173,38 @@ public class Panel_Nueva_Venta extends JPanel{
                     while (importe_Val == false){        
                         if (Double.parseDouble(cadena) >= Double.parseDouble(txtTotal_V.getText())){
                             Date fecha = jdchFecha_V.getDate();
-                            java.sql.Date date2 = new java.sql.Date(fecha.getTime());
+                            
                             
                             //validarDouble ();
-        
-                            System.out.println(date2);
-                            String sql1 = "CALL Nueva_Venta('"+txtCodigo_V.getText()+"', '"+ date2+"', "+Double.parseDouble(txtTotal_V.getText())+", "+txtNumero_Cl.getText()+", "+Double.parseDouble(cadena)+")";
-                            btnRegistrarActionPerformed(sql1); 
-                            //Insert productos vendidos falta consultar precios en tabla consultar nombre p
-                            if (nFilas[0] > 0){
-                                for (int i = 0; i<nFilas[0]; i++){  
-                                    String sql = "INSERT INTO producto_venta VALUES('"+txtCodigo_V.getText()+"','"+dtmProductos_V.getValueAt(i, 0)+"', "+dtmProductos_V.getValueAt(i, 2)+", "+1+", "+0+");";
-                                    btnRegistrarActionPerformed(sql); 
-                                    sql = "UPDATE producto_venta SET ExistenciaMod = 1 WHERE producto_venta.Codigo_P = '"+dtmProductos_V.getValueAt(i, 0)+"' AND producto_venta.Codigo_V = '"+txtCodigo_V.getText()+"';";
-                                    btnRegistrarActionPerformed(sql); 
+                             if (fecha == null){
+                                 System.out.println("Fecha de venta vacia");
+                             }
+                             else{
+                                 java.sql.Date date2 = new java.sql.Date(fecha.getTime());
+                                 //System.out.println(date2 + "date");
+                                String sql1 = "CALL Nueva_Venta('"+txtCodigo_V.getText()+"', '"+ date2 +"', "+Double.parseDouble(txtTotal_V.getText())+", "+txtNumero_Cl.getText()+", "+Double.parseDouble(cadena)+")";
+                                btnRegistrarActionPerformed(sql1); 
+                                //Insert productos vendidos falta consultar precios en tabla consultar nombre p
+                                if (nFilas[0] > 0){
+                                    for (int i = 0; i<nFilas[0]; i++){  
+                                        String sql = "INSERT INTO producto_venta VALUES('"+txtCodigo_V.getText()+"','"+dtmProductos_V.getValueAt(i, 0)+"', "+dtmProductos_V.getValueAt(i, 2)+", "+1+", "+0+");";
+                                        btnRegistrarActionPerformed(sql); 
+                                        sql = "UPDATE producto_venta SET ExistenciaMod = 1 WHERE producto_venta.Codigo_P = '"+dtmProductos_V.getValueAt(i, 0)+"' AND producto_venta.Codigo_V = '"+txtCodigo_V.getText()+"';";
+                                        btnRegistrarActionPerformed(sql); 
+                                    }
                                 }
-                            }
-                            //Insert servicios vendidos cambiar de modelo
+                                //Insert servicios vendidos cambiar de modelo
 
-                            if (nFilas[1] > 0){
-                                for (int i = 0; i<nFilas[1]; i++){
-                                    String sql = "INSERT INTO servicio_venta VALUES('"+txtCodigo_V.getText()+"', '"+dtmServicios_V.getValueAt(i, 0)+"', "+dtmServicios_V.getValueAt(i, 2)+", "+1+")";
-                                    btnRegistrarActionPerformed(sql);  
+                                if (nFilas[1] > 0){
+                                    for (int i = 0; i<nFilas[1]; i++){
+                                        String sql = "INSERT INTO servicio_venta VALUES('"+txtCodigo_V.getText()+"', '"+dtmServicios_V.getValueAt(i, 0)+"', "+dtmServicios_V.getValueAt(i, 2)+", "+1+")";
+                                        btnRegistrarActionPerformed(sql);  
+                                    }
                                 }
-                            }
-                            importe_Val = true;
-                            JOptionPane.showMessageDialog(null, "Cambio = " );
+                                importe_Val = true;
+                                JOptionPane.showMessageDialog(null, "Cambio = " );
+                             }
+                            
                         }    
                         else {
                             JOptionPane.showMessageDialog(null, "Digite un importe valido");
@@ -323,36 +330,41 @@ public class Panel_Nueva_Venta extends JPanel{
             btnNueva_fila.add(btn);
             btnNueva_fila.get(i).setText("+");
             final int indice = i;
+            
             btnNueva_fila.get(i).addActionListener(new java.awt.event.ActionListener() {
                 @Override           
                 public void actionPerformed(ActionEvent evt) {
-                    
-                    try{
-                        javax.swing.table.DefaultTableModel tmTabla = new javax.swing.table.DefaultTableModel();
-                        Object[] vector = null;
-                        String[] datos = {"", "", ""};//codigo, nombre, precio
-                        
-                        if (indice == 0){//Producto_Venta
-                            tmTabla = (javax.swing.table.DefaultTableModel)tProductos_Venta.getModel();
-                            vector = vector_Producto_Venta;
-                            
-                            //obtener datos
-                            obtenerDatos_Tablas(cbSeleccionar.get(indice), datos);    
-                        }
-                        else{//Servicio_Venta
-                            if (indice == 1){
-                                tmTabla = (javax.swing.table.DefaultTableModel)tServicios_Venta.getModel();
-                                vector = vector_Servicio_Venta;
-                                
+                    String cantidad;
+                    cantidad = JOptionPane.showInputDialog(null, "Ingrese cantidad", "Cantidad", JOptionPane.QUESTION_MESSAGE); 
+                    System.out.println(cantidad);
+                    if (!cantidad.isEmpty()){
+                        try{
+
+                            javax.swing.table.DefaultTableModel tmTabla = new javax.swing.table.DefaultTableModel();
+                            Object[] vector = null;
+                            String[] datos = {"", "", ""};//codigo, nombre, precio
+
+                            if (indice == 0){//Producto_Venta
+                                tmTabla = (javax.swing.table.DefaultTableModel)tProductos_Venta.getModel();
+                                vector = vector_Producto_Venta;
+
                                 //obtener datos
-                                obtenerDatos_Tablas(cbSeleccionar.get(indice), datos);                  
+                                obtenerDatos_Tablas(cbSeleccionar.get(indice), datos);    
                             }
+                            else{//Servicio_Venta
+                                if (indice == 1){
+                                    tmTabla = (javax.swing.table.DefaultTableModel)tServicios_Venta.getModel();
+                                    vector = vector_Servicio_Venta;
+
+                                    //obtener datos
+                                    obtenerDatos_Tablas(cbSeleccionar.get(indice), datos);                  
+                                }
+                            }                      
+                            btnNueva_FilaActionPerformed(tmTabla, vector, nFilas, indice, datos[0], datos[1], cantidad, datos[2]);
                         }
-                        String cantidad = JOptionPane.showInputDialog("Ingrese cantidad");                       
-                        btnNueva_FilaActionPerformed(tmTabla, vector, nFilas, indice, datos[0], datos[1], cantidad, datos[2]);
-                    }
-                    catch(Exception e){
-                        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                        catch(Exception e){
+                            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                        }
                     }
                 }
             });
