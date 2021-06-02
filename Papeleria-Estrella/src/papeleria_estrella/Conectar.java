@@ -20,7 +20,7 @@ public class Conectar {
     Connection con;
     //Datos de conexion a base de datos
     private static final String driver = "com.mysql.jdbc.Driver";
-    private static final String url = "jdbc:mysql://localhost:3306/byx3sabfnnvakquesc6r";
+    private static final String url = "jdbc:mysql://localhost:3306/papeleria_estrella";
     
     
     public Connection getConection(String user, String pass){
