@@ -5,6 +5,7 @@
  */
 package Panels_menu_principal;
 
+import com.sun.xml.internal.messaging.saaj.packaging.mime.util.QDecoderStream;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -16,11 +17,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultCellEditor;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 import listas.Compras;
 
 /**
@@ -39,8 +38,7 @@ public class Panel_Nueva_Compra extends JPanel{
     
     private void initComponents(final String[] vector) throws SQLException{
         jdchFechas_C = new ArrayList<com.toedter.calendar.JDateChooser>();
-        cbProdutos = new JComboBox();
-        P = new Compras();
+        P = new Compras(nProveedores);
         P = null;
         codigos_Pro = new ArrayList<String>();
         fProveedor = new JFrame();
@@ -71,24 +69,31 @@ public class Panel_Nueva_Compra extends JPanel{
         });
         
         btnRegistrar.setText("Registrar compra");
-        
         btnRegistrar.addActionListener(new java.awt.event.ActionListener(){
             @Override
             public void actionPerformed (ActionEvent e){
-                for (int i = 0; i<nProveedores; i++){
-                    Compras nodos = new Compras();
-                    int[] nFilas = new int[1];
-                    
-                    nodos = nodos.obtenerNodo(P, nFilas);
-                    System.out.println(nFilas[0]);
-                    JTable tabla = (JTable) sptNueva_Compra.get(i).getViewport().getComponent(0);
-                    DefaultTableModel modelo = (DefaultTableModel)tabla.getModel();
-                    
-                    for (int j = 0; j < nFilas[0]; j++){ //recorrer lista   
-                        System.out.println("CALL Nueva_Compra('"+modelo.getValueAt(0, 0)+"', '"+codigos_Pro.get(0)+"', '2021-05-30', "+modelo.getValueAt(0, 3)+", "+modelo.getValueAt(0,4)+", 0)");
-                        String sql = "CALL Nueva_Compra('"+modelo.getValueAt(j, 0)+"', '"+codigos_Pro.get(i)+"', '"+jdchFechas_C.get(i)+"', "+modelo.getValueAt(j, 3)+", "+modelo.getValueAt(j,4)+", 0)";
-                        btnRegistrarActionPerformed(con, sql);
-                        //System.out.println("hola");
+                int i = nProveedores - 1;
+                while (i >= 0){                       
+                    if (jdchFechas_C.get(i).getDate() != null){
+                        Compras nodos = new Compras(0);
+                        int[] nFilas = new int[nProveedores];
+
+                        nodos = nodos.obtenerNodo(P, nFilas);
+                        //System.out.println(nFilas[0]);
+                        JTable tabla = (JTable) sptNueva_Compra.get(i).getViewport().getComponent(0);
+                        DefaultTableModel modelo = (DefaultTableModel)tabla.getModel();
+
+                        for (int j = 0; j < nFilas[i]; j++){ //recorrer lista   
+                            //System.out.println("CALL Nueva_Compra('"+modelo.getValueAt(j, 0)+"', '"+codigos_Pro.get(i)+"', '"+jdchFechas_C.get(i)+"', "+modelo.getValueAt(j, 3)+", "+modelo.getValueAt(j,4)+", 0)");
+                            String sql = "CALL Nueva_Compra('"+modelo.getValueAt(j, 0)+"', '"+codigos_Pro.get(i)+"', '"+jdchFechas_C.get(i)+"', "+modelo.getValueAt(j, 2)+", "+modelo.getValueAt(j,3)+", 0)";
+                            btnRegistrarActionPerformed(con, sql);
+                            //System.out.println("hola");
+                        }
+                        i--;
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null, "No ha seleccionado fecha de compra");
+                        break;                
                     }
                 }
             }
@@ -107,8 +112,6 @@ public class Panel_Nueva_Compra extends JPanel{
             pBotones.add(btnRegistrar);
         /*}*/
         
-        cbProductos1();
-        
     }
     
     private void nuevaCompra (String[] vector){
@@ -124,8 +127,8 @@ public class Panel_Nueva_Compra extends JPanel{
             }  
         );
         
-        
         tNueva_compra.setModel(modelo);
+        tNueva_compra.setEnabled(false);
         //JScrollPane's
         JScrollPane spnewScrollP = new JScrollPane();
         spnewScrollP.setViewportView(tNueva_compra);
@@ -187,7 +190,11 @@ public class Panel_Nueva_Compra extends JPanel{
         btnListo.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                btnListoActionPerformed(dtmProveedor, vector);
+                try {
+                    btnListoActionPerformed(dtmProveedor, vector);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Panel_Nueva_Compra.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
 
@@ -251,25 +258,25 @@ public class Panel_Nueva_Compra extends JPanel{
         }
     }
     
-    private void cbProductos1 () throws SQLException{
+    private JComboBox cbProductos1 () throws SQLException{
+        JComboBox cb = new JComboBox();
         String sql = "SELECT Codigo_P, NOMBRE_P FROM producto";
         ResultSet rs = consultar(con, sql);
         
         while (rs.next() == true){
-            cbProdutos.addItem(rs.getString("Codigo_P")+"--"+rs.getString("NOMBRE_P"));
+           cb.addItem(rs.getString("Codigo_P")+"--"+rs.getString("NOMBRE_P"));
         }
+        
+        return cb;
     }
     
     private int validarint (String cadena){
         int numero;
-        boolean nValido = false;
         
         try{
             numero = Integer.parseInt(cadena);
-            nValido = true;
         }   
         catch (Exception ex){
-            nValido = false;
             numero = -1;
         }
         
@@ -278,14 +285,11 @@ public class Panel_Nueva_Compra extends JPanel{
     
     private double validardouble (String cadena){
         double numero;
-        boolean nValido= false;
         
         try{
             numero = Double.parseDouble(cadena);
-            nValido = true;
         }   
         catch (Exception ex){
-            nValido = false;
             numero = -1;
         }
         
@@ -293,7 +297,7 @@ public class Panel_Nueva_Compra extends JPanel{
     }
     
     //Listeners de botones
-    private void btnListoActionPerformed(DefaultTableModel dtmProveedor, final String[] vector){
+    private void btnListoActionPerformed(DefaultTableModel dtmProveedor, final String[] vector) throws SQLException{
         datos_Proveedor = new String[2];
         datos_Proveedor[0] = dtmProveedor.getValueAt(0, 0)+"";
         datos_Proveedor[1] = dtmProveedor.getValueAt(0, 1)+"";
@@ -301,21 +305,26 @@ public class Panel_Nueva_Compra extends JPanel{
         JPanel pFecha_C = new JPanel();
         JPanel panel = new JPanel();
         JPanel pProductos = new JPanel();
+        
         JLabel lblFecha_C = new JLabel();
         JLabel lblProductos = new JLabel();
         JLabel lblEspacio = new JLabel();
-        btnNueva_fila = new JButton();
+        JButton btnNueva_fila = new JButton();
+        final JComboBox cb = cbProductos1();
+        
         com.toedter.calendar.JDateChooser jdchFecha_C = new com.toedter.calendar.JDateChooser();
         
         lblFecha_C.setText  ("Fecha de la compra");
         lblProductos.setText("Productos                  ");
         lblEspacio.setText("");
-        jdchFecha_C.setDateFormatString("dd/MM/yyyy");
+        jdchFecha_C.setDateFormatString("dd/MM/yyyy");//format date
         
         jdchFechas_C.add(jdchFecha_C);
         
-        Compras Q = new Compras();
+        final Compras Q = new Compras(nProveedores);
         P = Q.creanodo(0, P, Q);
+        final int nTab = P.nTab;
+        
         
         btnNueva_fila.setText("  +  ");
         
@@ -323,11 +332,15 @@ public class Panel_Nueva_Compra extends JPanel{
         //nFilas.add(n);
         btnNueva_fila.addActionListener(new java.awt.event.ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                btnNueva_FilaActionPerformed(modelo, vector, cbProdutos, tNueva_compra, P.indiceF);
-                
+            public void actionPerformed(ActionEvent e){
+                Compras nodoActual = P;
+                while (nTab != P.nTab){
+                   P = Q.recorrerNodo(P);
+                }
+                btnNueva_FilaActionPerformed(modelo, vector, cb, P.indiceF);
+                P = nodoActual;
+                System.out.println("Pindice" + P.indiceF[0]);
             }
-            
         });
         
         //JPaneles
@@ -339,7 +352,7 @@ public class Panel_Nueva_Compra extends JPanel{
         pProductos.setLayout(new BorderLayout());
         pProductos.add(pFecha_C, BorderLayout.NORTH);
         pProductos.add(lblProductos, BorderLayout.WEST);
-        pProductos.add(cbProdutos, BorderLayout.CENTER);
+        pProductos.add(cb, BorderLayout.CENTER);
         pProductos.add(btnNueva_fila, BorderLayout.EAST);
         
         panel.setLayout(new BorderLayout());
@@ -355,32 +368,33 @@ public class Panel_Nueva_Compra extends JPanel{
         //Se guarda para registrar en base de datos     
     }
     
-    private void btnNueva_FilaActionPerformed(DefaultTableModel modelo, String[] vector, JComboBox cb, JTable tabla, int[] indiceF){
+    private void btnNueva_FilaActionPerformed(DefaultTableModel modelo, String[] vector, JComboBox cb, int[] indiceF){
         boolean valido = false;
         JPanel pNueva_Fila = new JPanel();
-            JPanel pPrecio = new JPanel();
-            JPanel pCantidad = new JPanel();
-            
-            JTextField txtCantidad = new JTextField();
-            JTextField txtPrecio = new JTextField();
-            JLabel lblCantidad = new JLabel();
-            JLabel lblPrecio = new JLabel();
-            
-            //label's
-            lblCantidad.setText("Cantidad");
-            lblPrecio.setText  ("Precio  ");
-            
-            pPrecio.setLayout(new BorderLayout());
-            pPrecio.add(lblPrecio, BorderLayout.WEST);
-            pPrecio.add(txtPrecio, BorderLayout.CENTER);
-            
-            pCantidad.setLayout(new BorderLayout());
-            pCantidad.add(lblCantidad, BorderLayout.WEST);
-            pCantidad.add(txtCantidad, BorderLayout.CENTER);
-            
-            pNueva_Fila.setLayout(new BorderLayout());
-            pNueva_Fila.add(pPrecio, BorderLayout.NORTH);
-            pNueva_Fila.add(pCantidad, BorderLayout.CENTER);
+        JPanel pPrecio = new JPanel();
+        JPanel pCantidad = new JPanel();
+
+        JTextField txtCantidad = new JTextField();
+        JTextField txtPrecio = new JTextField();
+        JLabel lblCantidad = new JLabel();
+        JLabel lblPrecio = new JLabel();
+
+        //label's
+        lblPrecio.setText  ("Precio     ");
+        lblCantidad.setText("Cantidad");
+        
+        //panel's
+        pPrecio.setLayout(new BorderLayout());
+        pPrecio.add(lblPrecio, BorderLayout.WEST);
+        pPrecio.add(txtPrecio, BorderLayout.CENTER);
+
+        pCantidad.setLayout(new BorderLayout());
+        pCantidad.add(lblCantidad, BorderLayout.WEST);
+        pCantidad.add(txtCantidad, BorderLayout.CENTER);
+
+        pNueva_Fila.setLayout(new BorderLayout());
+        pNueva_Fila.add(pCantidad, BorderLayout.NORTH);
+        pNueva_Fila.add(pPrecio, BorderLayout.CENTER);
             
         while (valido == false){
             JOptionPane.showMessageDialog(null,pNueva_Fila, "Cantidad y Precio", JOptionPane.QUESTION_MESSAGE);
@@ -389,9 +403,12 @@ public class Panel_Nueva_Compra extends JPanel{
 
             if (cantidad > 0 && precio >= 0){
                 String item = cb.getSelectedItem() + "";
+                System.out.println("item "+ item);
                 String codigo = "";
                 String nombre = "";
                 int indice = 0;
+                
+                boolean seguir = false;
 
                 for (int i = 0; i<item.length(); i++){
                     if (item.charAt(i) != '-' && item.charAt(i+1) != '-'){
@@ -408,13 +425,16 @@ public class Panel_Nueva_Compra extends JPanel{
                      nombre += item.charAt(i);
                 }
 
-                tabla.getModel().setValueAt(codigo, indiceF[0], 0);
-                tabla.getModel().setValueAt(nombre, indiceF[0], 1);
-                
+                modelo.setValueAt(codigo, indiceF[0], 0);
+                modelo.setValueAt(nombre, indiceF[0], 1);
+                modelo.setValueAt(cantidad, indiceF[0], 2);
+                modelo.setValueAt(precio, indiceF[0], 3);
+                modelo.setValueAt(precio*cantidad, indiceF[0], 4);
                 
                 modelo.addRow(vector);
 
                 indiceF[0]++;
+                System.out.println("indiceF[0] "+indiceF[0]);
                 valido = true;
             }
             else{
@@ -449,7 +469,6 @@ public class Panel_Nueva_Compra extends JPanel{
     
     private Connection con;
     private ArrayList<String> codigos_Pro;
-    private JComboBox cbProdutos;
     
     private Compras P;
       
@@ -462,7 +481,6 @@ public class Panel_Nueva_Compra extends JPanel{
     
     private JTable tNueva_compra;
     private ArrayList<JScrollPane> sptNueva_Compra;
-    private JButton btnNueva_fila;
     private JButton btnNueva_compra;
     private JButton btnRegistrar;
     private JTabbedPane tpCompras;
