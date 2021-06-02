@@ -69,20 +69,20 @@ public class Panel_Consulta_Ventas extends JPanel implements ActionListener{
         
         //    private JLabel lblTitulo;
         txtCodigo_V = new JTextField();
-        txtNumero_Cl = new JTextField();
+        txt_Cl = new JTextField();
         txtTotal_V = new JTextField();
         
         //JLabel's
-        lblTitulo.setText("Nueva venta");
+        lblTitulo.setText("Consultar venta");
         lblCodigo_V. setText("Codigo_V     ");
         lblFecha_V.  setText("Fecha_V       ");
-        lblNumero_Cl.setText("Numero_Cl  ");
+        lblNumero_Cl.setText("Nombre Servicio o Producto  ");
         lblTotal_V.  setText("Total Venta");
         
         //JTextField's
-        txtCodigo_V.setEditable(false);
-        txtNumero_Cl.setText("0");
-        
+      /*txtCodigo_V.setEditable(false);
+        txt_Cl.setText("0");
+      */  
         //JDate's
         jdchFecha_V.setDateFormatString("dd/MM/yyyy");
         
@@ -115,14 +115,41 @@ public class Panel_Consulta_Ventas extends JPanel implements ActionListener{
         botonesNueva_Fila(vector_Producto_Venta, vector_Servicio_Venta, nTabs);
         
     
-        btnConsultar_Cliente.setText("Consultar cliente");
+        btnConsultar_Cliente.setText("Consultar Venta");
         btnConsultar_Cliente.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnConsultar_ClienteActionPerformed(con);
-            }
+                final javax.swing.table.DefaultTableModel dtmTableServ = (DefaultTableModel) tServicios_Venta.getModel();
+                final javax.swing.table.DefaultTableModel dtmTablePro = (DefaultTableModel) tProductos_Venta.getModel();
+                
+                for(int i=(dtmTablePro.getRowCount()-1);i>=0;i--){
+                    dtmTablePro.removeRow(i);
+                }
+                for(int i=(dtmTableServ.getRowCount()-1);i>=0;i--){
+                    dtmTableServ.removeRow(i);
+                }
+                
+                for(int indice=0;indice<2;indice++){
+                    javax.swing.table.DefaultTableModel tmTabla = new javax.swing.table.DefaultTableModel();
+                    String[] vector = null;
 
-            private void btnConsultar_ClienteActionPerformed(Connection con) {          
+                    if (indice == 0){//Producto_Venta
+                        tmTabla = (javax.swing.table.DefaultTableModel)tProductos_Venta.getModel();
+                        vector = vector_Producto_Venta;
+                    }
+                    else{//Servicio_Venta
+                        if (indice == 1){
+                            tmTabla = (javax.swing.table.DefaultTableModel)tServicios_Venta.getModel();
+                            vector = vector_Servicio_Venta;
+                        }
+                    }
+                        
+                    btnNueva_FilaActionPerformed(evt, tmTabla, vector, indice);
+                    
+                    Datos(indice, dtmTableServ, dtmTablePro);              
+                    tpTablas.getComponentAt(indice).validate();
+                    tpTablas.getComponentAt(indice).repaint();
+                }       
             }
         });
        
@@ -160,7 +187,7 @@ public class Panel_Consulta_Ventas extends JPanel implements ActionListener{
         /*Contenido pNumero_Cl*/
         pNumero_Cl.setLayout(new BorderLayout());
         pNumero_Cl.add(lblNumero_Cl, BorderLayout.WEST);
-        pNumero_Cl.add(txtNumero_Cl, BorderLayout.CENTER);
+        pNumero_Cl.add(txt_Cl, BorderLayout.CENTER);
         
         /*Contenido pDatos_Venta*/
         pDatos_Venta.setLayout(new BorderLayout());
@@ -286,60 +313,103 @@ public class Panel_Consulta_Ventas extends JPanel implements ActionListener{
                     }*/
                 }catch(SQLException ex){
                 }
-                
-                if (indice == 0){//Producto_Venta
-                    sql = "select pv.Codigo_V as Ventas, pv.Codigo_P as ID, p.NOMBRE_P as Producto, p.Precio_P as Precio, pv.Cantidad_P as Pedido, p.Precio_P*pv.Cantidad_P as SubTotal, v.Fecha_V as Fecha from producto_venta as pv inner join producto as p on p.Codigo_P = pv.Codigo_P inner join venta as v on v.Codigo_V = pv.Codigo_V having  p.Nombre_P is not null order by v.Fecha_V asc";
-                    try {
-                        sentencia=(Statement) con.createStatement();
-                        rs=sentencia.executeQuery(sql);
-                    } catch (SQLException ex) { 
-                        Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    for (int i = 0; i < nFilas; i++) {   
-                        try {
-                            if(rs.next()&&rs!=null){
-                                dtmTablePro.setValueAt(rs.getString("Ventas"), i, 0);
-                                dtmTablePro.setValueAt(rs.getString("ID"), i, 1);
-                                dtmTablePro.setValueAt(rs.getString("Producto"), i, 2);
-                                dtmTablePro.setValueAt(rs.getString("Precio"), i, 3);
-                                dtmTablePro.setValueAt(rs.getString("Pedido"), i, 4);
-                                dtmTablePro.setValueAt(rs.getString("SubTotal"), i, 5);
-                                dtmTablePro.setValueAt(rs.getString("Fecha"), i, 6);
-                            }
-                        } catch (SQLException ex) {
-                            Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                }
-                else{//Servicio_Venta
-                    if (indice == 1){
-                        sql = "select sv.Codigo_V as Venta, sv.Codigo_S as ID, s.Nombre_S as Servicio, s.Precio_S as Precio, sv.Cantidad_S as Encargo, s.Precio_S*sv.Cantidad_S as SubTotal, v.Fecha_V as Fecha from servicio_venta as sv inner join servicio as s on s.Codigo_S = sv.Codigo_S inner join venta as v on v.Codigo_V = sv.Codigo_V having Servicio is not null order by v.Fecha_V asc";
-                        try {
-                            sentencia=(Statement) con.createStatement();
-                            rs=sentencia.executeQuery(sql);
-                        } catch (SQLException ex) { 
-                            Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        for (int i = 0; i < nFilas; i++) {   
-                            try {
-                                if(rs.next()&&rs!=null){
-                                    dtmTableServ.setValueAt(rs.getString("Venta"), i, 0);
-                                    dtmTableServ.setValueAt(rs.getString("ID"), i, 1);
-                                    dtmTableServ.setValueAt(rs.getString("Servicio"), i, 2);
-                                    dtmTableServ.setValueAt(rs.getString("Precio"), i, 3);
-                                    dtmTableServ.setValueAt(rs.getString("Encargo"), i, 4);
-                                    dtmTableServ.setValueAt(rs.getString("SubTotal"), i, 5);
-                                    dtmTableServ.setValueAt(rs.getString("Fecha"), i, 6);
-                                }
-                            } catch (SQLException ex) {
-                                Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        } 
-                    }
-                }
+                Filtros(indice, dtmTableServ, dtmTablePro, nFilas);
             }
         });
         btnConsulta.doClick();
+    }
+    
+    public void Filtros(final int indice, final DefaultTableModel dtmTableServ, final DefaultTableModel dtmTablePro,int nFilas){
+        String sql = null;
+        ResultSet rs=null;
+        Statement sentencia=null;
+        
+        if (indice == 0){//Producto_Venta
+            sql = "select pv.Codigo_V as Ventas, pv.Codigo_P as ID, p.NOMBRE_P as Producto, p.Precio_P as Precio, pv.Cantidad_P as Pedido, p.Precio_P*pv.Cantidad_P as SubTotal, v.Fecha_V as Fecha from producto_venta as pv inner join producto as p on p.Codigo_P = pv.Codigo_P inner join venta as v on v.Codigo_V = pv.Codigo_V having p.Nombre_P is not null";
+            
+                if(!(txtCodigo_V.getText().equals(""))){
+                    sql+=" AND pv.Codigo_V='"+txtCodigo_V.getText()+"'";
+                }
+                
+                if(jdchFecha_V.getDate()!=null){
+                    Date fecha = jdchFecha_V.getDate();
+                    java.sql.Date date2 = new java.sql.Date(fecha.getTime());
+                    sql+=" AND Fecha='"+date2+"'";
+                }
+                
+                if(!(txt_Cl.getText().equals(""))){
+                    sql+=" AND p.NOMBRE_P LIKE ('%"+txt_Cl.getText()+"%')";
+                }
+            
+            sql+=" order by v.Fecha_V asc";
+            try {
+                sentencia=(Statement) con.createStatement();
+                rs=sentencia.executeQuery(sql);
+            } catch (SQLException ex) { 
+                Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            for (int i = 0; i < nFilas; i++) {   
+                try {
+                    if(rs.next()&&rs!=null){
+                        dtmTablePro.setValueAt(rs.getString("Ventas"), i, 0);
+                        dtmTablePro.setValueAt(rs.getString("ID"), i, 1);
+                        dtmTablePro.setValueAt(rs.getString("Producto"), i, 2);
+                        dtmTablePro.setValueAt(rs.getString("Precio"), i, 3);
+                        dtmTablePro.setValueAt(rs.getString("Pedido"), i, 4);
+                        dtmTablePro.setValueAt(rs.getString("SubTotal"), i, 5);
+                        dtmTablePro.setValueAt(rs.getString("Fecha"), i, 6);
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        else{//Servicio_Venta
+            if (indice == 1){
+                sql = "select sv.Codigo_V as Venta, sv.Codigo_S as ID, s.Nombre_S as Servicio, s.Precio_S as Precio, sv.Cantidad_S as Encargo, s.Precio_S*sv.Cantidad_S as SubTotal, v.Fecha_V as Fecha from servicio_venta as sv inner join servicio as s on s.Codigo_S = sv.Codigo_S inner join venta as v on v.Codigo_V = sv.Codigo_V having Servicio is not null";
+                
+                    if(!(txtCodigo_V.getText().equals(""))){
+                        sql+=" AND Venta='"+txtCodigo_V.getText()+"'";
+                    }
+                                     
+                    if(jdchFecha_V.getDate()!=null){
+                        Date fecha = jdchFecha_V.getDate();
+                        java.sql.Date date2 = new java.sql.Date(fecha.getTime());
+                        sql+=" AND Fecha='"+date2+"'";
+                    }
+                    
+                    if(!(txt_Cl.getText().equals(""))){
+                        sql+=" AND Servicio LIKE ('%"+txt_Cl.getText()+"%')";
+                    }
+            
+                sql+=" order by v.Fecha_V asc";
+                try {
+                    sentencia=(Statement) con.createStatement();
+                    rs=sentencia.executeQuery(sql);
+                } catch (SQLException ex) { 
+                    Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                for (int i = 0; i < nFilas; i++) {   
+                    try {
+                        if(rs.next()&&rs!=null){
+                            dtmTableServ.setValueAt(rs.getString("Venta"), i, 0);
+                            dtmTableServ.setValueAt(rs.getString("ID"), i, 1);
+                            dtmTableServ.setValueAt(rs.getString("Servicio"), i, 2);
+                            dtmTableServ.setValueAt(rs.getString("Precio"), i, 3);
+                            dtmTableServ.setValueAt(rs.getString("Encargo"), i, 4);
+                            dtmTableServ.setValueAt(rs.getString("SubTotal"), i, 5);
+                            dtmTableServ.setValueAt(rs.getString("Fecha"), i, 6);
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } 
+            }
+        }
+        //Date fecha = jdchFecha_V.getDate();
+        //java.sql.Date date2 = new java.sql.Date(fecha.getTime());
+
+        //System.out.println("Vacio Fecha"+date2);
     }
     
     private void panelesTabbedPane (byte nTabs){
@@ -434,7 +504,7 @@ public class Panel_Consulta_Ventas extends JPanel implements ActionListener{
     private JLabel lblTitulo;
 //    private JLabel lblTitulo;
     private JTextField txtCodigo_V;
-    private JTextField txtNumero_Cl;
+    private JTextField txt_Cl;
     private JTextField txtTotal_V;
     // End of variables declaration    
 
