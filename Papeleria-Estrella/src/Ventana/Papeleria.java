@@ -1,6 +1,7 @@
 package Ventana;
 
 import Panels_menu_principal.Panel_Actualizar_Datos;
+import Panels_menu_principal.Panel_Consulta_Compras;
 import Panels_menu_principal.Panel_Consulta_Datos;
 import Panels_menu_principal.Panel_Consulta_Ventas;
 import Panels_menu_principal.Panel_Nueva_Compra;
@@ -238,6 +239,22 @@ public class Papeleria extends JApplet implements ActionListener{
             Panel_Consulta_Ventas panel = new Panel_Consulta_Ventas(con);
             llamarPanel(panel);
         }
+        //Compras
+        if (e.getSource() == m_c_Compras){
+            Panel_Consulta_Compras panel;
+            try {
+                panel = new Panel_Consulta_Compras(con);
+                llamarPanel(panel);
+            } catch (SQLException ex) {
+                Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        //Inventario
+        if (e.getSource() == m_c_Inventario){
+            Panel_Consulta_Datos panel = new Panel_Consulta_Datos("Consultar_Inventario", con);
+            llamarPanel(panel.pPrincipal);
+        }
+        
         if (e.getSource() == m_s_Cerrar){
             try {
                 //Cerrar conexion a base de datos

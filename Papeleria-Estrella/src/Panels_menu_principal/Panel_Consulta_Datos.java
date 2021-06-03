@@ -51,6 +51,13 @@ public class Panel_Consulta_Datos{
                         btnNuevaFila.doClick();
                         btnRegistrar.doClick();
                     }
+                    else {
+                        if (nombre_Panel.equals("Consultar_Inventario")){
+                            pPrincipal = PConsultar_Inventario();
+                            btnNuevaFila.doClick();
+                            btnRegistrar.doClick();
+                        }
+                    }
                 }
             }   
         }
@@ -98,7 +105,7 @@ public class Panel_Consulta_Datos{
                 
                 ResultSet rs=null;
                 Statement sentencia=null;
-                String sql = "Select Codigo_P, Nombre_P, Precio_P From producto";
+                String sql = "Select Codigo_P, Nombre_P, Precio_P From producto where Precio_P is not null and NOMBRE_P is not null";
                 try {
                     sentencia=(Statement) con.createStatement();
                     rs=sentencia.executeQuery(sql);
@@ -211,7 +218,7 @@ public class Panel_Consulta_Datos{
             public void actionPerformed(ActionEvent e) {
                 ResultSet rs=null;
                 Statement sentencia=null;
-                String sql = "Select Codigo_S, Nombre_S, Precio_S From servicio";
+                String sql = "Select Codigo_S, Nombre_S, Precio_S From servicio where Nombre_S is not null";
                 try {
                     sentencia=(Statement) con.createStatement();
                     rs=sentencia.executeQuery(sql);
@@ -315,7 +322,7 @@ public class Panel_Consulta_Datos{
             public void actionPerformed(ActionEvent e) {
                 ResultSet rs=null;
                 Statement sentencia=null;
-                String sql = "Select Numero_Cl, Nombre_Cl, Telefono_Cl From cliente";
+                String sql = "Select Numero_Cl, Nombre_Cl, Telefono_Cl From cliente where Nombre_Cl is not null";
                 try {
                     sentencia=(Statement) con.createStatement();
                     rs=sentencia.executeQuery(sql);
@@ -419,7 +426,7 @@ public class Panel_Consulta_Datos{
             public void actionPerformed(ActionEvent e) {
                 ResultSet rs=null;
                 Statement sentencia=null;
-                String sql = "Select Codigo_Pro, Nombre_Pro, No_Tel_Pro, Direccion_Pro From proveedor";
+                String sql = "Select Codigo_Pro, Nombre_Pro, No_Tel_Pro, Direccion_Pro From proveedor Where Nombre_Pro is not null";
                 try {
                     sentencia=(Statement) con.createStatement();
                     rs=sentencia.executeQuery(sql);
@@ -480,6 +487,112 @@ public class Panel_Consulta_Datos{
         pSur.add(btnNuevaFila);
         pSur.add(btnRegistrar);
         
+        return panel;
+    }
+    
+    private JPanel PConsultar_Inventario (){
+        JPanel panel = new JPanel();
+        
+        lblTitulo = new JLabel();
+        pSur = new JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tTabla = new javax.swing.JTable();
+        lblEspacio1 = new JLabel();
+        lblEspacio2 = new JLabel();
+        btnRegistrar = new JButton();
+        btnNuevaFila = new JButton();
+        
+        //labels
+        lblTitulo.setText("           Consultar Inventario");
+        lblEspacio1.setText("           ");
+        lblEspacio2.setText("           ");
+
+        //Consultar numero de ultimo cliente
+        
+        final String[] vector = {null, null, null};
+        //JTable
+        tTabla.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                vector,
+            },
+            new String [] {
+                "Codigo Producto", "Nombre Producto", "Existencia"
+            }
+        ));
+        tTabla.enable(false);
+        jScrollPane1.setViewportView(tTabla);
+
+        final javax.swing.table.DefaultTableModel dtmTable = (DefaultTableModel) tTabla.getModel();
+
+        //Botones
+        btnRegistrar.setText("Consultar");
+        btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+                ResultSet rs=null;
+                Statement sentencia=null;
+                String sql = "Select Codigo_P, Nombre_P, Exitencia_P From producto where Precio_P is not null and NOMBRE_P is not null";
+                try {
+                    sentencia=(Statement) con.createStatement();
+                    rs=sentencia.executeQuery(sql);
+                } catch (SQLException ex) { 
+                    Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                for (int i = 0; i < nFilas; i++) {   
+                    try {
+                        if(rs.next()&&rs!=null){
+                            dtmTable.setValueAt(rs.getString("Codigo_P"), i, 0);
+                            dtmTable.setValueAt(rs.getString("Nombre_P"), i, 1);
+                            dtmTable.setValueAt(rs.getInt("Exitencia_P"), i, 2);
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                    }     
+                }
+                
+            }
+        });
+
+        btnNuevaFila.setText("Nueva Fila");
+        btnNuevaFila.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ResultSet rs=null;
+                Statement sentencia=null;
+                String sql = "Select count(*) as filas From producto"; 
+                try {
+                    sentencia=(Statement) con.createStatement();
+                    rs=sentencia.executeQuery(sql);
+                    rs.next();
+                    int Filas = rs.getInt("Filas");
+                    rs.close();
+                    for(int i=0;i<Filas;i++){
+                        btnNuevaFilaActionPerformed(e, dtmTable, vector); 
+                    }
+                } catch (SQLException ex) { 
+                    Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+
+
+        //Paneles
+        panel.setLayout(new java.awt.BorderLayout());
+
+        panel.add(lblTitulo, java.awt.BorderLayout.NORTH);
+        panel.add(lblEspacio1, java.awt.BorderLayout.EAST);
+        panel.add(lblEspacio2, java.awt.BorderLayout.WEST);
+
+        panel.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+
+        //panel.add(pSur, java.awt.BorderLayout.SOUTH);
+
+        /*Panel parte inferior*/
+        pSur.setLayout(new java.awt.GridLayout(1, 3));
+        pSur.add(btnNuevaFila);
+        pSur.add(btnRegistrar);
+
         return panel;
     }
      
