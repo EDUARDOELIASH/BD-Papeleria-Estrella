@@ -4,7 +4,6 @@ package Panels_menu_principal;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,7 +27,7 @@ import javax.swing.table.DefaultTableModel;
 /*
  * @author Gijon Vazquez Elias Dominick
  */
-public class Panel_Consulta_Ventas extends JPanel implements ActionListener{
+public class Panel_Consulta_Ventas extends JPanel{
     
     //Talves se necesite parametro Connection
     public Panel_Consulta_Ventas (Connection con){
@@ -230,16 +229,11 @@ public class Panel_Consulta_Ventas extends JPanel implements ActionListener{
         SimpleDateFormat formatoFecha=new SimpleDateFormat("dd/MM/YYYY");
         
         //el return de este metodo se asigna a txtFecha_V
-        /*
-            se puede añadir un listener para que no se pueda editar fecha
-            jdchFecha_V.setDate(fechaActual);
-        */
         return fecha;
     }
     
     private void botonesNueva_Fila (final String[] vector_Producto_Venta, final String[] vector_Servicio_Venta, byte nTabs){    
         for (int i = 0; i < nTabs; i++) {
-            
             JButton btn = new JButton();
             
             btnNueva_fila.add(btn);
@@ -275,7 +269,6 @@ public class Panel_Consulta_Ventas extends JPanel implements ActionListener{
                     }
                 }
             });
-            
             btnNueva_fila.get(i).doClick();
             
         }     
@@ -508,15 +501,6 @@ public class Panel_Consulta_Ventas extends JPanel implements ActionListener{
     private JTextField txtTotal_V;
     // End of variables declaration    
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if(e.getSource()==tpTablas.getTabComponentAt(0)){
-            
-        }
-       /* if(e.getSource()==Servicio){
-            JFrame x=new JFrame();
-            x.setVisible(true);
-        }*/
-    }
+    
     
 }

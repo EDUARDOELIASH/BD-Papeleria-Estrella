@@ -8,7 +8,6 @@ package Panels_menu_principal;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,12 +35,13 @@ import javax.swing.table.DefaultTableModel;
 public class Panel_Nueva_Venta extends JPanel{
     
     //Talves se necesite parametro Connection
-    public Panel_Nueva_Venta (Connection con, JMenuItem menuItem) throws SQLException{
+    public Panel_Nueva_Venta (Connection con, JMenuItem menuItemNCl, JMenuItem menuItemNVenta) throws SQLException{
         this.con = con;
-        initComponents(menuItem);
+        this.menuItemVenta = menuItemVenta;
+        initComponents(menuItemNCl);
     }
     
-    private void initComponents(final JMenuItem menuItem) throws SQLException{
+    private void initComponents(final JMenuItem menuItemNCl) throws SQLException{
         final Object [] vector_Producto_Venta = {null,null,null,null,null};
         final String [] vector_Servicio_Venta = {null,null,null,null,null};
         final boolean[] editable_Producto_Venta = {false,false,false,false,false};
@@ -151,7 +151,7 @@ public class Panel_Nueva_Venta extends JPanel{
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
-                    btnNuevo_ClienteActionPerformed(con, menuItem);
+                    btnNuevo_ClienteActionPerformed(con, menuItemNCl);
                 } catch (SQLException ex) {
                     Logger.getLogger(Panel_Nueva_Venta.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -168,7 +168,6 @@ public class Panel_Nueva_Venta extends JPanel{
                     
                     //crear metodo cadena to double
                     boolean importe_Val = false;
-
 
                     while (importe_Val == false){        
                         if (Double.parseDouble(cadena) >= Double.parseDouble(txtTotal_V.getText())){
@@ -215,6 +214,7 @@ public class Panel_Nueva_Venta extends JPanel{
                     JOptionPane.showMessageDialog(null, "Ingrese datos en la tabla");
                 }
                     //se vuelve a llamar panel
+                menuItemVenta.doClick();   
             }
         });    
            
@@ -560,6 +560,7 @@ public class Panel_Nueva_Venta extends JPanel{
     // Variables declaration - do not modify  
     private Connection con;
     private int total_V = 0;
+    private JMenuItem menuItemVenta;
     
     private JPanel pCentro;
     private JPanel pBotones;
