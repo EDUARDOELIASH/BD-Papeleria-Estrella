@@ -31,31 +31,31 @@ public class Panel_Consulta_Datos{
         if (nombre_Panel.equals("Consultar_Producto")){
             pPrincipal = PConsultar_Producto();
             btnNuevaFila.doClick();
-            btnRegistrar.doClick();
+            btnConsultar.doClick();
         }
         else{
             if (nombre_Panel.equals("Consultar_Servicio")){
                 pPrincipal = PConsultar_Servicio();
                 btnNuevaFila.doClick();
-                btnRegistrar.doClick();
+                btnConsultar.doClick();
             }
             else{
                 if (nombre_Panel.equals("Consultar_Cliente")){
                     pPrincipal = PConsultar_Cliente();
                     btnNuevaFila.doClick();
-                    btnRegistrar.doClick();
+                    btnConsultar.doClick();
                 }
                 else {
                     if (nombre_Panel.equals("Consultar_Proveedor")){
                         pPrincipal = PConsultar_Proveedor();
                         btnNuevaFila.doClick();
-                        btnRegistrar.doClick();
+                        btnConsultar.doClick();
                     }
                     else {
                         if (nombre_Panel.equals("Consultar_Inventario")){
                             pPrincipal = PConsultar_Inventario();
                             btnNuevaFila.doClick();
-                            btnRegistrar.doClick();
+                            btnConsultar.doClick();
                         }
                     }
                 }
@@ -72,7 +72,7 @@ public class Panel_Consulta_Datos{
         tTabla = new javax.swing.JTable();
         lblEspacio1 = new JLabel();
         lblEspacio2 = new JLabel();
-        btnRegistrar = new JButton();
+        btnConsultar = new JButton();
         btnNuevaFila = new JButton();
         
         //labels
@@ -98,8 +98,8 @@ public class Panel_Consulta_Datos{
         final javax.swing.table.DefaultTableModel dtmTable = (DefaultTableModel) tTabla.getModel();
 
         //Botones
-        btnRegistrar.setText("Consultar");
-        btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
+        btnConsultar.setText("Consultar");
+        btnConsultar.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 
@@ -125,7 +125,7 @@ public class Panel_Consulta_Datos{
                     
                   /* Verificar datos de tabla
                     try {
-                        btnRegistrarActionPerformed(e, con, sql);
+                        btnConsultarActionPerformed(e, con, sql);
                     } catch (SQLException ex) {
                         Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -172,7 +172,7 @@ public class Panel_Consulta_Datos{
         /*Panel parte inferior*/
         pSur.setLayout(new java.awt.GridLayout(1, 3));
         pSur.add(btnNuevaFila);
-        pSur.add(btnRegistrar);
+        pSur.add(btnConsultar);
 
         return panel;
     }
@@ -186,7 +186,7 @@ public class Panel_Consulta_Datos{
         tTabla = new javax.swing.JTable();
         lblEspacio1 = new JLabel();
         lblEspacio2 = new JLabel();
-        btnRegistrar = new JButton();
+        btnConsultar = new JButton();
         btnNuevaFila = new JButton();
         
         //labels
@@ -212,8 +212,8 @@ public class Panel_Consulta_Datos{
         final javax.swing.table.DefaultTableModel dtmTable = (DefaultTableModel) tTabla.getModel();
         
         //Botones
-        btnRegistrar.setText("Consultar");
-        btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
+        btnConsultar.setText("Consultar");
+        btnConsultar.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ResultSet rs=null;
@@ -276,7 +276,7 @@ public class Panel_Consulta_Datos{
         /*Panel parte inferior*/
         pSur.setLayout(new java.awt.GridLayout(1, 3));
         pSur.add(btnNuevaFila);
-        pSur.add(btnRegistrar);
+        pSur.add(btnConsultar);
 
         return panel;
     }
@@ -291,7 +291,7 @@ public class Panel_Consulta_Datos{
         tTabla = new javax.swing.JTable();
         lblEspacio1 = new JLabel();
         lblEspacio2 = new JLabel();
-        btnRegistrar = new JButton();
+        btnConsultar = new JButton();
         btnNuevaFila = new JButton();
 
         //labels
@@ -316,8 +316,8 @@ public class Panel_Consulta_Datos{
         
         final javax.swing.table.DefaultTableModel dtmTable = (DefaultTableModel) tTabla.getModel();
         //Botones
-        btnRegistrar.setText("Consultar");
-        btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
+        btnConsultar.setText("Consultar");
+        btnConsultar.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ResultSet rs=null;
@@ -380,7 +380,7 @@ public class Panel_Consulta_Datos{
         /*Panel parte inferior*/
         pSur.setLayout(new java.awt.GridLayout(1, 3));
         pSur.add(btnNuevaFila);
-        pSur.add(btnRegistrar);
+        pSur.add(btnConsultar);
         
         return panel;
     }
@@ -395,7 +395,7 @@ public class Panel_Consulta_Datos{
         tTabla = new javax.swing.JTable();
         lblEspacio1 = new JLabel();
         lblEspacio2 = new JLabel();
-        btnRegistrar = new JButton();
+        btnConsultar = new JButton();
         btnNuevaFila = new JButton();
 
         //labels
@@ -420,8 +420,8 @@ public class Panel_Consulta_Datos{
         
         final javax.swing.table.DefaultTableModel dtmTable = (DefaultTableModel) tTabla.getModel();
         //Botones
-        btnRegistrar.setText("Consultar");
-        btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
+        btnConsultar.setText("Consultar");
+        btnConsultar.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ResultSet rs=null;
@@ -485,7 +485,7 @@ public class Panel_Consulta_Datos{
         /*Panel parte inferior*/
         pSur.setLayout(new java.awt.GridLayout(1, 3));
         pSur.add(btnNuevaFila);
-        pSur.add(btnRegistrar);
+        pSur.add(btnConsultar);
         
         return panel;
     }
@@ -499,7 +499,7 @@ public class Panel_Consulta_Datos{
         tTabla = new javax.swing.JTable();
         lblEspacio1 = new JLabel();
         lblEspacio2 = new JLabel();
-        btnRegistrar = new JButton();
+        btnConsultar = new JButton();
         btnNuevaFila = new JButton();
         
         //labels
@@ -525,14 +525,14 @@ public class Panel_Consulta_Datos{
         final javax.swing.table.DefaultTableModel dtmTable = (DefaultTableModel) tTabla.getModel();
 
         //Botones
-        btnRegistrar.setText("Consultar");
-        btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
+        btnConsultar.setText("Consultar");
+        btnConsultar.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 
                 ResultSet rs=null;
                 Statement sentencia=null;
-                String sql = "Select Codigo_P, Nombre_P, Exitencia_P From producto where Precio_P is not null and NOMBRE_P is not null";
+                String sql = "Select Codigo_P, Nombre_P, Existencia_P From producto where Precio_P is not null and NOMBRE_P is not null";
                 try {
                     sentencia=(Statement) con.createStatement();
                     rs=sentencia.executeQuery(sql);
@@ -544,7 +544,7 @@ public class Panel_Consulta_Datos{
                         if(rs.next()&&rs!=null){
                             dtmTable.setValueAt(rs.getString("Codigo_P"), i, 0);
                             dtmTable.setValueAt(rs.getString("Nombre_P"), i, 1);
-                            dtmTable.setValueAt(rs.getInt("Exitencia_P"), i, 2);
+                            dtmTable.setValueAt(rs.getInt("Existencia_P"), i, 2);
                         }
                     } catch (SQLException ex) {
                         Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
@@ -591,7 +591,7 @@ public class Panel_Consulta_Datos{
         /*Panel parte inferior*/
         pSur.setLayout(new java.awt.GridLayout(1, 3));
         pSur.add(btnNuevaFila);
-        pSur.add(btnRegistrar);
+        pSur.add(btnConsultar);
 
         return panel;
     }
@@ -601,7 +601,7 @@ public class Panel_Consulta_Datos{
         nFilas ++;
     }
     
-    private void btnRegistrarActionPerformed (java.awt.event.ActionEvent evt, Connection con, String sql) throws SQLException{
+    private void btnConsultarActionPerformed (java.awt.event.ActionEvent evt, Connection con, String sql) throws SQLException{
         try (Statement statement = con.createStatement()) {
             statement.executeUpdate(sql);   
         }
@@ -619,7 +619,7 @@ public class Panel_Consulta_Datos{
     public JPanel pPrincipal;
     private JPanel pSur;
     private JButton btnNuevaFila;
-    private JButton btnRegistrar;
+    private JButton btnConsultar;
     private int ultimo_Cliente;
     // End of variables declaration   
 }

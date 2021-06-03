@@ -28,9 +28,9 @@ import listas.Compras;
  */
 public class Panel_Nueva_Compra extends JPanel{
     
-    public Panel_Nueva_Compra (Connection con) throws SQLException{
+    public Panel_Nueva_Compra (Connection con, JMenuItem menuItemNCompra) throws SQLException{
         this.con = con;
-        
+        this.menuItemNCompra = menuItemNCompra;
         nProveedores = 0;
         String[] vector = {null,null,null,null,null};
         initComponents(vector);
@@ -97,6 +97,7 @@ public class Panel_Nueva_Compra extends JPanel{
                         break;                
                     }
                 }
+                menuItemNCompra.doClick();
             }
         });
         
@@ -475,7 +476,7 @@ public class Panel_Nueva_Compra extends JPanel{
     
     private Connection con;
     private ArrayList<String> codigos_Pro;
-    
+    private JMenuItem menuItemNCompra;
     //Lista
     private Compras P;
       

@@ -31,7 +31,7 @@ public class Papeleria extends JApplet implements ActionListener{
         //1.Creamos el Formulario
         JF_Estadisticas = new JFrame();
         JF_Estadisticas.setTitle("Papeleria la estrella");
-        JF_Estadisticas.setSize(600, 500);
+        JF_Estadisticas.setSize(700, 600);
         JF_Estadisticas.setLayout(new BorderLayout());
         
         //2.Agregar los paneles para distribucion
@@ -162,9 +162,10 @@ public class Papeleria extends JApplet implements ActionListener{
     
     @Override
     public void actionPerformed(ActionEvent e) {
+        //Menu nuevo
         if (e.getSource() == m_n_Venta){
             try {
-                Panel_Nueva_Venta panel = new Panel_Nueva_Venta(con, m_nD_Clientes);
+                Panel_Nueva_Venta panel = new Panel_Nueva_Venta(con, m_nD_Clientes, m_n_Venta);
                 llamarPanel(panel);
             } catch (SQLException ex) {
                 Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
@@ -172,7 +173,7 @@ public class Papeleria extends JApplet implements ActionListener{
         }
         if (e.getSource() == m_n_Compra){
             try {
-                Panel_Nueva_Compra panel = new Panel_Nueva_Compra(con);
+                Panel_Nueva_Compra panel = new Panel_Nueva_Compra(con, m_n_Compra);
                 llamarPanel(panel);
             } catch (SQLException ex) {
                 Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
@@ -254,7 +255,7 @@ public class Papeleria extends JApplet implements ActionListener{
             Panel_Consulta_Datos panel = new Panel_Consulta_Datos("Consultar_Inventario", con);
             llamarPanel(panel.pPrincipal);
         }
-        
+        //Cerrar sesion
         if (e.getSource() == m_s_Cerrar){
             try {
                 //Cerrar conexion a base de datos
@@ -263,9 +264,11 @@ public class Papeleria extends JApplet implements ActionListener{
             } catch (SQLException ex) {
                 Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
             }
-            JF_Estadisticas.dispose();            
+            JF_Estadisticas.
+                    dispose();            
         }
-        if (e.getSource() == m_Inicio){
+        //Iniciar sesion
+        if (e.getSource() == m_s_Iniciar){
             try {
                 //Cerrar conexion a base de datos
                 //Agregar JOptionPane para confirmar cerrar conexion
@@ -277,21 +280,52 @@ public class Papeleria extends JApplet implements ActionListener{
             Login sesion = new Login();
         }
         if (e.getSource() == m_a_Productos){
-            Panel_Actualizar_Datos panel = new Panel_Actualizar_Datos("Actualizar_Precio_P", con);
-            llamarPanel(panel.pPrincipal);
+            try {
+                Panel_Actualizar_Datos panel = new Panel_Actualizar_Datos("Actualizar_Precio_P", m_a_Productos, con);
+                llamarPanel(panel.pPrincipal);
+            } catch (SQLException ex) {
+                Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         if (e.getSource() == m_a_Servicios){
-            Panel_Actualizar_Datos panel = new Panel_Actualizar_Datos("Actualizar_Precio_S", con);
-            llamarPanel(panel.pPrincipal);
+            try {
+                Panel_Actualizar_Datos panel = new Panel_Actualizar_Datos("Actualizar_Precio_S", m_a_Servicios, con);
+                llamarPanel(panel.pPrincipal);
+            } catch (SQLException ex) {
+                Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         if (e.getSource() == m_a_Cliente){
-            Panel_Actualizar_Datos panel = new Panel_Actualizar_Datos("Actualizar_Numero_Tel_Cl", con);
-            llamarPanel(panel.pPrincipal);
+            try {
+                //Actualizar telefono del cliente
+                Panel_Actualizar_Datos panel = new Panel_Actualizar_Datos("Actualizar_Numero_Tel_Cl", m_a_Cliente, con);
+                llamarPanel(panel.pPrincipal);
+            } catch (SQLException ex) {
+                Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        if (e.getSource() == m_aP_Telefono){
+            try {
+                Panel_Actualizar_Datos panel = new Panel_Actualizar_Datos("Actualizar_Numero_Tel_Pro", m_aP_Telefono, con);
+                llamarPanel(panel.pPrincipal);
+            } catch (SQLException ex) {
+                Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        if (e.getSource() == m_aP_Direccion){
+            try {
+                Panel_Actualizar_Datos panel = new Panel_Actualizar_Datos("Actualizar_Direccion_Pro", m_aP_Direccion, con);
+                llamarPanel(panel.pPrincipal);
+            } catch (SQLException ex) {
+                Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         if (e.getSource() == m_Inicio){
             JF_Estadisticas.remove(jspPanel);
+            JF_Estadisticas.repaint();
+            JF_Estadisticas.validate();
+            
         }
-        
     }   
     
     private void llamarPanel(final JPanel panel){
@@ -324,8 +358,6 @@ public class Papeleria extends JApplet implements ActionListener{
                 @Override
                 public void run() {
                     JF_Estadisticas.remove(jspPanel);
-                    
-                    JP_Central = panel;
                     
                     jspPanel.setViewportView(panel);
                     JF_Estadisticas.add(jspPanel, BorderLayout.CENTER);

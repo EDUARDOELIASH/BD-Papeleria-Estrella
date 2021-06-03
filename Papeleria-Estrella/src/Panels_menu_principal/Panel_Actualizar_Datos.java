@@ -5,19 +5,23 @@
  */
 package Panels_menu_principal;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
-import papeleria_estrella.Conectar;
 
 /**
  *
@@ -25,65 +29,78 @@ import papeleria_estrella.Conectar;
  */
 public class Panel_Actualizar_Datos{
     
-    public Panel_Actualizar_Datos (String nombre_Panel, Connection con){   
+    public Panel_Actualizar_Datos (String nombre_Panel, JMenuItem menuItem, Connection con) throws SQLException{   
         this.con = con;
-        nFilas = 1;
+        this.menuItem = menuItem;
+        
+        nFilas = 0;
+        initComponents();
+        
         if (nombre_Panel.equals("Actualizar_Precio_P")){
             pPrincipal = PActualizar_Producto();
-            btnNuevaFila.doClick();
-            btnRegistrar.doClick();
         }
         else{
             if (nombre_Panel.equals("Actualizar_Precio_S")){
-                pPrincipal = PActualizar_Servicio();
-                btnNuevaFila.doClick();
-                btnRegistrar.doClick();
+                pPrincipal = PActualizar_Servicio();            
             }
             else{
                 if (nombre_Panel.equals("Actualizar_Numero_Tel_Cl")){
-                    pPrincipal = PActualizar_Cliente();
-                    btnNuevaFila.doClick();
-                    btnRegistrar.doClick();
+                    pPrincipal = PActualizar_Cliente();               
                 }
                 else {
-                    if (nombre_Panel.equals("Actualizar_Proveedor")){
-                        pPrincipal = PActualizar_Proveedor();
-                        btnNuevaFila.doClick();
-                        btnRegistrar.doClick();
+                    if (nombre_Panel.equals("Actualizar_Numero_Tel_Pro")){
+                        pPrincipal = PActualizar_Proveedor("No_Tel_Pro");                        
+                    }
+                    else{
+                        if (nombre_Panel.equals("Actualizar_Direccion_Pro")){
+                            pPrincipal = PActualizar_Proveedor("Direccion_Pro");
+                        }
                     }
                 }
             }   
         }
     }
     
-    private JPanel PActualizar_Producto (){
-        JPanel panel = new JPanel();
-        final boolean[] editable = {false, false, true};
-        
+    private void initComponents() {
+        pPrincipal = new JPanel();
         lblTitulo = new JLabel();
-        pSur = new JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tTabla = new javax.swing.JTable();
         lblEspacio1 = new JLabel();
         lblEspacio2 = new JLabel();
-        btnRegistrar = new JButton();
+        btnActualizar = new JButton();
         btnNuevaFila = new JButton();
+    }
+    
+    private JPanel PActualizar_Producto () throws SQLException{
+        JPanel pNORTH = new JPanel();
+        JPanel panel;
+        JPanel pSOUTH = new JPanel();
+        
+        //variables para JTable
+        final String[] vector = {null, null, null};
+        final boolean[] editable = {false, false, true};
+        final int nColumnas = 3;
+        String[] columnas = new String[nColumnas];
+        
+        nombreT = "producto";
         
         //labels
         lblTitulo.setText("           Actualizar precio de Producto");
         lblEspacio1.setText("           ");
-        lblEspacio2.setText("           ");
-
-        //Consultar numero de ultimo cliente
+        lblEspacio2.setText("           ");       
         
-        final String[] vector = {null, null, null};
         //JTable
+        columnas[0] = "Codigo_P";
+        columnas[1] = "NOMBRE_P";
+        columnas[2] = "Precio_P";
+        
         tTabla.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                vector,
+
             },
             new String [] {
-                "Codigo_P", "Nombre_P", "Precio_P"
+                columnas[0], columnas[1], columnas[2]
             }
         ){
             @Override
@@ -91,110 +108,60 @@ public class Panel_Actualizar_Datos{
                 return editable[column];
             }
         });
-        
         jScrollPane1.setViewportView(tTabla);
 
+        //JComboBox
+        final JComboBox cb = comboBoxSeleccionar(columnas, nombreT);
+        
         final javax.swing.table.DefaultTableModel dtmTable = (DefaultTableModel) tTabla.getModel();
 
         //Botones
-        btnRegistrar.setText("Consultar");
-        btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                
-                ResultSet rs=null;
-                Statement sentencia=null;
-                String sql = "Select Codigo_P, Nombre_P, Precio_P From producto";
-                try {
-                    sentencia=(Statement) con.createStatement();
-                    rs=sentencia.executeQuery(sql);
-                } catch (SQLException ex) { 
-                    Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                for (int i = 0; i < nFilas; i++) {   
-                    try {
-                        if(rs.next()&&rs!=null){
-                            dtmTable.setValueAt(rs.getString("Codigo_P"), i, 0);
-                            dtmTable.setValueAt(rs.getString("Nombre_P"), i, 1);
-                            dtmTable.setValueAt(rs.getDouble("Precio_P"), i, 2);
-                        }
-                    } catch (SQLException ex) {
-                        Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    
-                  /* Verificar datos de tabla
-                    try {
-                        btnRegistrarActionPerformed(e, con, sql);
-                    } catch (SQLException ex) {
-                        Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    
-                  /* Verificar datos de tabla
-                    try {
-                        btnRegistrarActionPerformed(e, con, sql);
-                    } catch (SQLException ex) {
-                        Logger.getLogger(Panel_Consulta_Datos.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                  */             
-                }
-                
-            }
-        });
-
-        btnNuevaFila.setText("Nueva Fila");
+         btnNuevaFila.setText("Nueva Fila");
         btnNuevaFila.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ResultSet rs=null;
-                Statement sentencia=null;
-                String sql = "Select count(*) as filas From producto"; 
-                try {
-                    sentencia=(Statement) con.createStatement();
-                    rs=sentencia.executeQuery(sql);
-                    rs.next();
-                    int Filas = rs.getInt("Filas");
-                    rs.close();
-                    for(int i=0;i<Filas;i++){
-                        btnNuevaFilaActionPerformed(e, dtmTable, vector); 
-                    }
-                } catch (SQLException ex) { 
-                    Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                String[] datos = {"", "", ""};
+                btnNuevaFilaActionPerformed(dtmTable, vector, datos, cb, nColumnas); 
             }
         });
-
+        
+        final String[] columnas1 = columnas;
+        final int nColumnaActualizar = 2;
+        
+        btnActualizar.setText("Actualizar");
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    for (int i = 0; i < nFilas; i++){
+                        String sqlAct = "UPDATE " + nombreT + " SET " + columnas1[nColumnaActualizar] + "='" + dtmTable.getValueAt(i, nColumnaActualizar) 
+                                + "' WHERE " + columnas1[0] + "='" + dtmTable.getValueAt(i, 0)+"'";
+                        btnActualizarActionPerformed(con, sqlAct, "Precio_P");
+                    }   
+                } catch (SQLException ex) {
+                    Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                }    
+            }                     
+        });
 
         //Paneles
-        panel.setLayout(new java.awt.BorderLayout());
-
-        panel.add(lblTitulo, java.awt.BorderLayout.NORTH);
-        panel.add(lblEspacio1, java.awt.BorderLayout.EAST);
-        panel.add(lblEspacio2, java.awt.BorderLayout.WEST);
-
-        panel.add(jScrollPane1, java.awt.BorderLayout.CENTER);
-
-        //panel.add(pSur, java.awt.BorderLayout.SOUTH);
-
-        /*Panel parte inferior*/
-        pSur.setLayout(new java.awt.GridLayout(1, 3));
-        pSur.add(btnNuevaFila);
-        pSur.add(btnRegistrar);
+        panel = organizarPanel(pNORTH, pSOUTH, cb);
 
         return panel;
     }
     
-    private JPanel PActualizar_Servicio (){
-        JPanel panel = new JPanel();
-        final boolean[] editable = {false, false, true};
+    private JPanel PActualizar_Servicio () throws SQLException{
+        JPanel pNORTH = new JPanel();
+        JPanel panel;
+        JPanel pSOUTH = new JPanel();
         
-        lblTitulo = new JLabel();
-        pSur = new JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tTabla = new javax.swing.JTable();
-        lblEspacio1 = new JLabel();
-        lblEspacio2 = new JLabel();
-        btnRegistrar = new JButton();
-        btnNuevaFila = new JButton();
+        //Variables para JTable
+        final String[] vector = {null, null, null};
+        final boolean[] editable = {false, false, true};
+        final int nColumnas = 3;
+        String[] columnas = new String[nColumnas];
+        
+        nombreT = "servicio";
         
         //labels
         lblTitulo.setText("           Actualizar precio de servicio");
@@ -203,14 +170,18 @@ public class Panel_Actualizar_Datos{
 
         //Consultar numero de ultimo cliente
         
-        final String[] vector = {null, null, null};
+
         //JTable
+        columnas[0] = "Codigo_S";
+        columnas[1] = "Nombre_S";
+        columnas[2] = "Precio_S";
+        
         tTabla.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 vector
             },
             new String [] {
-                "Codigo_S", "Nombre_S", "Precio_S"
+                columnas[0], columnas[1], columnas[2]
             }
         ){
             @Override
@@ -221,301 +192,340 @@ public class Panel_Actualizar_Datos{
         
         jScrollPane1.setViewportView(tTabla);
         
+        //JComboBox
+        final JComboBox cb = comboBoxSeleccionar(columnas, nombreT);
+        
         final javax.swing.table.DefaultTableModel dtmTable = (DefaultTableModel) tTabla.getModel();
         
         //Botones
-        btnRegistrar.setText("Consultar");
-        btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
+        btnNuevaFila.setText("Nueva Fila");
+        btnNuevaFila.addActionListener(new java.awt.event.ActionListener() {          
             @Override
             public void actionPerformed(ActionEvent e) {
-                ResultSet rs=null;
-                Statement sentencia=null;
-                String sql = "Select Codigo_S, Nombre_S, Precio_S From servicio";
-                try {
-                    sentencia=(Statement) con.createStatement();
-                    rs=sentencia.executeQuery(sql);
-                } catch (SQLException ex) { 
-                    Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                for (int i = 0; i < nFilas; i++) {   
-                    try {
-                        if(rs.next()&&rs!=null){
-                            dtmTable.setValueAt(rs.getString("Codigo_S"), i, 0);
-                            dtmTable.setValueAt(rs.getString("Nombre_S"), i, 1);
-                            dtmTable.setValueAt(rs.getDouble("Precio_S"), i, 2);
-                        }
-                    } catch (SQLException ex) {
-                        Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
+                String[] datos = {"", "", ""};
+                btnNuevaFilaActionPerformed(dtmTable, vector, datos, cb, nColumnas); 
             }
         });
-
-
-        btnNuevaFila.setText("Nueva Fila");
-        btnNuevaFila.addActionListener(new java.awt.event.ActionListener() {
+        
+        final String[] columnas1 = columnas;
+        final int nColumnaActualizar = 2;
+        
+        btnActualizar.setText("Actualizar");
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {    
             @Override
             public void actionPerformed(ActionEvent e) {
-                ResultSet rs=null;
-                Statement sentencia=null;
-                String sql = "Select count(*) as filas From servicio"; 
-                try {
-                    sentencia=(Statement) con.createStatement();
-                    rs=sentencia.executeQuery(sql);
-                    rs.next();
-                    int Filas = rs.getInt("Filas");
-                    rs.close();
-                    for(int i=0;i<Filas;i++){
-                        btnNuevaFilaActionPerformed(e, dtmTable, vector); 
-                    }
-                } catch (SQLException ex) { 
+                try{
+                    for (int i = 0; i < nFilas; i++){
+                        String sqlAct = "UPDATE " + nombreT + " SET " + columnas1[nColumnaActualizar] + "='" + dtmTable.getValueAt(i, nColumnaActualizar) 
+                                + "' WHERE " + columnas1[0] + "='" + dtmTable.getValueAt(i, 0)+"'";
+                        btnActualizarActionPerformed(con, sqlAct, "Precio_P");
+                    }   
+                } catch (SQLException ex) {
                     Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                }    
             }
         });
 
         //Paneles
-        panel.setLayout(new java.awt.BorderLayout());
-
-        panel.add(lblTitulo, java.awt.BorderLayout.NORTH);
-        panel.add(lblEspacio1, java.awt.BorderLayout.EAST);
-        panel.add(lblEspacio2, java.awt.BorderLayout.WEST);
-
-        panel.add(jScrollPane1, java.awt.BorderLayout.CENTER);
-
-        //panel.add(pSur, java.awt.BorderLayout.SOUTH);
-
-        /*Panel parte inferior*/
-        pSur.setLayout(new java.awt.GridLayout(1, 3));
-        pSur.add(btnNuevaFila);
-        pSur.add(btnRegistrar);
+        panel = organizarPanel(pNORTH, pSOUTH, cb);
 
         return panel;
     }
 
     //Panel Nuevo_Cliente
-    private JPanel PActualizar_Cliente (){
-        JPanel panel = new JPanel();    
+    private JPanel PActualizar_Cliente () throws SQLException{
+        JPanel pSOUTH = new JPanel();
+        JPanel panel; 
+        JPanel pNORTH = new JPanel();
         
-        lblTitulo = new JLabel();
-        pSur = new JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tTabla = new javax.swing.JTable();
-        lblEspacio1 = new JLabel();
-        lblEspacio2 = new JLabel();
-        btnRegistrar = new JButton();
-        btnNuevaFila = new JButton();
-
+        //Variables para JTable
+        final String[] vector = {null, null, null};
+        final boolean[] editable = {false, false, true};
+        final int nColumnas = 3;
+        String[] columnas = new String[nColumnas];
+        
+        nombreT = "cliente";
+        
         //labels
-        lblTitulo.setText("           Nuevo Cliente");
+        lblTitulo.setText("           Actualizar telefono de Cliente");
         lblEspacio1.setText("           ");
         lblEspacio2.setText("           ");
 
         //Consultar numero de ultimo cliente
- 
-        final String[] vector = {null, null, null};
+        
         //JTable
+        columnas[0] = "Numero_Cl";
+        columnas[1] = "Nombre_Cl";
+        columnas[2] = "Telefono_Cl";
+        
         tTabla.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
+                
             },
             new String [] {
-                "Numero_Cl", "Nombre_Cl", "Telefono_Cl"
-            }
-        ));
+                columnas[0], columnas[1], columnas[2]
+            }){
+                @Override
+                public boolean isCellEditable(int row, int column){
+                    return editable[column];
+                }
+        });
         
         jScrollPane1.setViewportView(tTabla);
         
+        final JComboBox cb = comboBoxSeleccionar(columnas, nombreT);       
+         
         final javax.swing.table.DefaultTableModel dtmTable = (DefaultTableModel) tTabla.getModel();
+        
         //Botones
-        btnRegistrar.setText("Consultar");
-        btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
+        btnNuevaFila.setText("Nueva Fila");
+        btnNuevaFila.addActionListener(new java.awt.event.ActionListener() {          
             @Override
             public void actionPerformed(ActionEvent e) {
-                ResultSet rs=null;
-                Statement sentencia=null;
-                String sql = "Select Numero_Cl, Nombre_Cl, Telefono_Cl From cliente";
-                try {
-                    sentencia=(Statement) con.createStatement();
-                    rs=sentencia.executeQuery(sql);
-                } catch (SQLException ex) { 
-                    Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                for (int i = 0; i < nFilas; i++) {   
-                    try {
-                        if(rs.next()&&rs!=null){
-                            dtmTable.setValueAt(rs.getInt("Numero_Cl"), i, 0);
-                            dtmTable.setValueAt(rs.getString("Nombre_Cl"), i, 1);
-                            dtmTable.setValueAt(rs.getString("Telefono_Cl"), i, 2);
-                        }
-                    } catch (SQLException ex) {
-                        Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
+                String[] datos = {"", "", ""};
+                btnNuevaFilaActionPerformed(dtmTable, vector, datos, cb, nColumnas); 
             }
         });
-
-
-        btnNuevaFila.setText("Nueva Fila");
-        btnNuevaFila.addActionListener(new java.awt.event.ActionListener() {
+        
+        final String[] columnas1 = columnas;
+        final int nColumnaActualizar = 2;
+        
+        btnActualizar.setText("Actualizar");
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {    
             @Override
             public void actionPerformed(ActionEvent e) {
-                ResultSet rs=null;
-                Statement sentencia=null;
-                String sql = "Select count(*) as filas From cliente"; 
-                try {
-                    sentencia=(Statement) con.createStatement();
-                    rs=sentencia.executeQuery(sql);
-                    rs.next();
-                    int Filas = rs.getInt("Filas");
-                    rs.close();
-                    for(int i=0;i<Filas;i++){
-                        btnNuevaFilaActionPerformed(e, dtmTable, vector); 
-                    }
-                } catch (SQLException ex) { 
+                try{
+                    for (int i = 0; i < nFilas; i++){
+                        String sqlAct = "UPDATE " + nombreT + " SET " + columnas1[nColumnaActualizar] + "='" + dtmTable.getValueAt(i, nColumnaActualizar) 
+                                + "' WHERE " + columnas1[0] + "='" + dtmTable.getValueAt(i, 0)+"'";
+                        btnActualizarActionPerformed(con, sqlAct, "Precio_P");
+                    }   
+                } catch (SQLException ex) {
                     Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                }    
             }
         });
         
         //Paneles
-        panel.setLayout(new java.awt.BorderLayout());
-
-        panel.add(lblTitulo, java.awt.BorderLayout.NORTH);
-        panel.add(lblEspacio1, java.awt.BorderLayout.EAST);
-        panel.add(lblEspacio2, java.awt.BorderLayout.WEST);
-
-        panel.add(jScrollPane1, java.awt.BorderLayout.CENTER);
-
-//        panel.add(pSur, java.awt.BorderLayout.SOUTH);
-
-        /*Panel parte inferior*/
-        pSur.setLayout(new java.awt.GridLayout(1, 3));
-        pSur.add(btnNuevaFila);
-        pSur.add(btnRegistrar);
+        panel = organizarPanel(pNORTH, pSOUTH, cb);
         
         return panel;
     }
     
-    private JPanel PActualizar_Proveedor (){
-        JPanel panel = new JPanel();
+    private JPanel PActualizar_Proveedor (final String columna) throws SQLException{
+        JPanel pNORTH = new JPanel();
+        JPanel panel;
+        JPanel pSOUTH = new JPanel();
         
-        pPrincipal = new JPanel();
-        lblTitulo = new JLabel();
-        pSur = new JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tTabla = new javax.swing.JTable();
-        lblEspacio1 = new JLabel();
-        lblEspacio2 = new JLabel();
-        btnRegistrar = new JButton();
-        btnNuevaFila = new JButton();
+        //variables para JTable
+        final String[] vector = {null, null, null};
+        final boolean[] editable = {false, false, true};
+        final int nColumnas = 3;
+        String[] columnas = new String[nColumnas];
+       
+        nombreT = "proveedor";  
 
         //labels
-        lblTitulo.setText("           Nuevo Proveedor");
+        lblTitulo.setText("           Actualizar "+ columna+" de proveedor");
         lblEspacio1.setText("           ");
         lblEspacio2.setText("           ");
 
-        //Consultar numero de ultimo cliente
-
-        final String[] vector = {null, null, null, null};
         //JTable
-        tTabla.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                vector
-            },
-            new String [] {
-                "Codigo_Pro", "Nombre_Pro", "No_Telefono_Pro", "Direccion_Pro"
-            }
-        ));
         
+        if (columna.equals("No_Tel_Pro")){
+            columnas[0] = "Codigo_Pro";
+            columnas[1] = "Nombre_Pro";
+            columnas[2] = columna;
+            
+            tTabla.setModel(new javax.swing.table.DefaultTableModel(
+                new Object [][] {
+                    
+                },
+                new String [] {
+                    columnas[0], columnas[1], columnas[2]
+                }
+                ){
+                    @Override
+                    public boolean isCellEditable(int row, int column){
+                        return editable[column];
+                    }
+            });
+        }
+        else{
+            if (columna.equals("Direccion_Pro")){
+                columnas[0] = "Codigo_Pro";
+                columnas[1] = "Nombre_Pro";
+                columnas[2] = columna;
+                
+                tTabla.setModel(new javax.swing.table.DefaultTableModel(
+                    new Object [][] {
+                        vector
+                    },
+                    new String [] {
+                        columnas[0], columnas[1], columnas[2]
+                    }
+                    ){
+                        @Override
+                        public boolean isCellEditable(int row, int column){
+                            return editable[column];
+                        }
+                });             
+            }
+        }
         jScrollPane1.setViewportView(tTabla);
         
+        //JComboBox
+        final JComboBox cb = comboBoxSeleccionar(columnas, nombreT);
+        
         final javax.swing.table.DefaultTableModel dtmTable = (DefaultTableModel) tTabla.getModel();
+        
         //Botones
-        btnRegistrar.setText("Consultar");
-        btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ResultSet rs=null;
-                Statement sentencia=null;
-                String sql = "Select Codigo_Pro, Nombre_Pro, No_Tel_Pro, Direccion_Pro From proveedor";
-                try {
-                    sentencia=(Statement) con.createStatement();
-                    rs=sentencia.executeQuery(sql);
-                } catch (SQLException ex) { 
-                    Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                for (int i = 0; i < nFilas; i++) {   
-                    try {
-                        if(rs.next()&&rs!=null){
-                            dtmTable.setValueAt(rs.getString("Codigo_Pro"), i, 0);
-                            dtmTable.setValueAt(rs.getString("Nombre_Pro"), i, 1);
-                            dtmTable.setValueAt(rs.getString("No_Tel_Pro"), i, 2);
-                            dtmTable.setValueAt(rs.getString("Direccion_Pro"), i, 3);
-                        }
-                    } catch (SQLException ex) {
-                        Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }
-        });
-
-
         btnNuevaFila.setText("Nueva Fila");
         btnNuevaFila.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ResultSet rs=null;
-                Statement sentencia=null;
-                String sql = "Select count(*) as filas From proveedor"; 
-                try {
-                    sentencia=(Statement) con.createStatement();
-                    rs=sentencia.executeQuery(sql);
-                    rs.next();
-                    int Filas = rs.getInt("Filas");
-                    rs.close();
-                    for(int i=0;i<Filas;i++){
-                        btnNuevaFilaActionPerformed(e, dtmTable, vector); 
-                    }
-                } catch (SQLException ex) { 
+                String[] datos = {"", "", ""}; 
+                btnNuevaFilaActionPerformed(dtmTable, vector, datos, cb, nColumnas);
+            }
+        });
+        
+        final String[] columnas1 = columnas;
+        final int nColumnaActualizar = 2;
+        
+        btnActualizar.setText("Actualizar");
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try { 
+                    for (int i = 0; i < nFilas; i++){
+                        String sqlAct = "UPDATE " + nombreT + " SET " + columnas1[nColumnaActualizar] + "='" + dtmTable.getValueAt(i, nColumnaActualizar) 
+                                + "' WHERE " + columnas1[0] + "='" + dtmTable.getValueAt(i, 0)+"'";
+                        btnActualizarActionPerformed(con, sqlAct, columna);
+                    }   
+                } catch (SQLException ex) {
                     Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
-
+        
         //Paneles
-        panel.setLayout(new java.awt.BorderLayout());
+        panel = organizarPanel(pNORTH, pSOUTH, cb);
+        
+        return panel;
+    }
+    
+    private JComboBox comboBoxSeleccionar (String[] columnas, String nombreT) throws SQLException{
+        JComboBox cbSeleccionar = new JComboBox();
+        
+        //cambio nombreT por indice
+        String sql;
 
-        panel.add(lblTitulo, java.awt.BorderLayout.NORTH);
-        panel.add(lblEspacio1, java.awt.BorderLayout.EAST);
-        panel.add(lblEspacio2, java.awt.BorderLayout.WEST);
+        sql = "SELECT "+columnas[0]+", "+columnas[1]+", "+columnas[2]+" FROM " + nombreT;
 
-        panel.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        final ResultSet rs = consultar(sql);
+        while (rs.next() == true){
+            try {
+                cbSeleccionar.addItem(rs.getString(columnas[0]) + "--" + rs.getString(columnas[1]) + "--" + rs.getString(columnas[2]));
 
-        //panel.add(pSur, java.awt.BorderLayout.SOUTH);
+            } catch (SQLException ex) {
+                Logger.getLogger(Panel_Nueva_Venta.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 
-        /*Panel parte inferior*/
-        pSur.setLayout(new java.awt.GridLayout(1, 3));
-        pSur.add(btnNuevaFila);
-        pSur.add(btnRegistrar);
+        return cbSeleccionar;
+    }
+    
+    private void obtenerDatos_Tablas (JComboBox comboBox, String[] datos){
+        String item = comboBox.getSelectedItem()+"";
+        int indice = 0;
+        
+        //Se recorre item
+        //Se obtiene codigo
+        for (int i = 0; i<item.length(); i++){
+            if (item.charAt(i) != '-' && item.charAt(i+1) != '-'){
+                datos[0] += item.charAt(i);
+            } 
+            else {
+                datos[0] += item.charAt(i);
+                indice = i;     
+                break;
+            }
+        }
+        
+        //se obtiene nombre
+        for (int i = indice + 3; i < item.length(); i++) {
+            if (item.charAt(i) != '-' && item.charAt(i+1) != '-'){
+                datos[1] += item.charAt(i);
+            } 
+            else {
+                datos[1] += item.charAt(i);
+                indice = i;     
+                break;
+            }
+        }
+        
+        for (int i = indice + 3; i < item.length(); i++) {
+            datos[2] += item.charAt(i);
+        }
+        
+    }
+        
+    private ResultSet consultar (String sql) throws SQLException{
+        Statement st = con.createStatement();
+        ResultSet rs = st.executeQuery(sql);
+        
+        return rs;
+    }
+    
+    private JPanel organizarPanel (JPanel pNORTH, JPanel pSOUTH,  JComboBox cb){
+        JPanel panel = new JPanel();
+        /*pNORTH*/
+        pNORTH.setLayout(new BorderLayout());
+        pNORTH.add(lblTitulo, BorderLayout.NORTH);
+        pNORTH.add(btnNuevaFila, BorderLayout.EAST);
+        pNORTH.add(cb, BorderLayout.CENTER);
+        
+        /*pSOUTH*/
+        pSOUTH.setLayout(new BorderLayout());
+        pSOUTH.add(btnActualizar);
+        
+        panel.setLayout(new BorderLayout());
+        panel.add(pNORTH, BorderLayout.NORTH);
+        panel.add(lblEspacio1, BorderLayout.EAST);
+        panel.add(lblEspacio2, BorderLayout.WEST);
+        panel.add(jScrollPane1, BorderLayout.CENTER); 
+        panel.add(pSOUTH, BorderLayout.SOUTH);
         
         return panel;
     }
      
-    private void btnNuevaFilaActionPerformed (java.awt.event.ActionEvent evt, javax.swing.table.DefaultTableModel dtmTable, String[] vector){       
+    private void btnNuevaFilaActionPerformed (javax.swing.table.DefaultTableModel dtmTable, String[] vector, String[] datos, JComboBox cb, int nColumnas){       
         dtmTable.addRow(vector);
         nFilas ++;
-    }
-    
-    private void btnRegistrarActionPerformed (java.awt.event.ActionEvent evt, Connection con, String sql) throws SQLException{
-        try (Statement statement = con.createStatement()) {
-            statement.executeUpdate(sql);   
+        obtenerDatos_Tablas(cb, datos);
+                
+        for (int i = 0; i < nColumnas; i++){
+            dtmTable.setValueAt(datos[i], nFilas-1, i);
         }
     }
+    
+    private void btnActualizarActionPerformed (Connection con, String sql, String columna) throws SQLException{
+        try (PreparedStatement pStatement = (PreparedStatement) con.prepareStatement(sql)) {
+            pStatement.executeUpdate(sql);  
+            JOptionPane.showMessageDialog(null, "Actualizacion exitosa", "Actualizar " + columna +" de "+ nombreT, JOptionPane.INFORMATION_MESSAGE);
+            menuItem.doClick();
+        }
+        catch(Exception e) {
+            JOptionPane.showMessageDialog(null, "Actualizacion fallida", "Actualizar " + columna +" de "+ nombreT, JOptionPane.INFORMATION_MESSAGE);
+        }
+        
+    }  
     
     // Variables declaration - do not modify
     private Connection con;
     private int nFilas;
+    String nombreT;
+    private JMenuItem menuItem;
     
     private JLabel lblEspacio1;
     private JLabel lblEspacio2;
@@ -523,9 +533,8 @@ public class Panel_Actualizar_Datos{
     private javax.swing.JTable tTabla;
     private JLabel lblTitulo;
     public JPanel pPrincipal;
-    private JPanel pSur;
     private JButton btnNuevaFila;
-    private JButton btnRegistrar;
+    private JButton btnActualizar;
     private int ultimo_Cliente;
     // End of variables declaration   
 }
