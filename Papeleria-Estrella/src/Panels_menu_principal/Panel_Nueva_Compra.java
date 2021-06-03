@@ -37,6 +37,7 @@ public class Panel_Nueva_Compra extends JPanel{
     }
     
     private void initComponents(final String[] vector) throws SQLException{
+        
         jdchFechas_C = new ArrayList<com.toedter.calendar.JDateChooser>();
         P = new Compras(nProveedores);
         P = null;
@@ -114,9 +115,9 @@ public class Panel_Nueva_Compra extends JPanel{
         
     }
     
-    private void nuevaCompra (String[] vector){
+    private JTable nueva_tCompra (String[] vector){
         //JTable's
-        tNueva_compra = new JTable();
+        JTable tNueva_compra1 = new JTable();
         
         DefaultTableModel modelo = new DefaultTableModel(
         new Object[][]{
@@ -133,6 +134,8 @@ public class Panel_Nueva_Compra extends JPanel{
         JScrollPane spnewScrollP = new JScrollPane();
         spnewScrollP.setViewportView(tNueva_compra);
         sptNueva_Compra.add(spnewScrollP);
+        
+        return tNueva_compra1;
     }
     
     private JFrame fNombre_proveedor (final String[] vector, JFrame fNombre_proveedor) throws SQLException{
@@ -298,10 +301,12 @@ public class Panel_Nueva_Compra extends JPanel{
     
     //Listeners de botones
     private void btnListoActionPerformed(DefaultTableModel dtmProveedor, final String[] vector) throws SQLException{
+        //Boton listo dentro de frame proveedores
         datos_Proveedor = new String[2];
         datos_Proveedor[0] = dtmProveedor.getValueAt(0, 0)+"";
         datos_Proveedor[1] = dtmProveedor.getValueAt(0, 1)+"";
         
+        //Panelees
         JPanel pFecha_C = new JPanel();
         JPanel panel = new JPanel();
         JPanel pProductos = new JPanel();
@@ -445,7 +450,7 @@ public class Panel_Nueva_Compra extends JPanel{
     }
     
     private void btnNueva_compraActionPerformed (String[] vector) throws SQLException{
-        nuevaCompra(vector);
+        tNueva_compra = nueva_tCompra(vector);
         
         fProveedor = fNombre_proveedor(vector, fProveedor);
         fProveedor.setVisible(true);
@@ -455,7 +460,8 @@ public class Panel_Nueva_Compra extends JPanel{
     }
     
     private void btnRegistrarActionPerformed (Connection con, String sql){
-       try {
+        //Ejecuta instruccion sql para agregar en tablas
+        try {
             // TODO add your handling code here:
             //Se registra todo en las tablas de las bases de datos
             Statement st = con.createStatement();
@@ -470,6 +476,7 @@ public class Panel_Nueva_Compra extends JPanel{
     private Connection con;
     private ArrayList<String> codigos_Pro;
     
+    //Lista
     private Compras P;
       
     private int nProveedores;
@@ -486,6 +493,5 @@ public class Panel_Nueva_Compra extends JPanel{
     private JTabbedPane tpCompras;
     private ArrayList<com.toedter.calendar.JDateChooser> jdchFechas_C;
     
-    private JFrame fNombre_proveedor;
-    
+    private JFrame fNombre_proveedor;    
 }
