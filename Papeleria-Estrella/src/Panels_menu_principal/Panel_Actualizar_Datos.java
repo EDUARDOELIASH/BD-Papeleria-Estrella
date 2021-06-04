@@ -28,7 +28,6 @@ import javax.swing.table.DefaultTableModel;
  * @author Eduardo Elias Hernandez Moreno
  */
 public class Panel_Actualizar_Datos{
-    
     public Panel_Actualizar_Datos (String nombre_Panel, JMenuItem menuItem, Connection con) throws SQLException{   
         this.con = con;
         this.menuItem = menuItem;
@@ -535,6 +534,5 @@ public class Panel_Actualizar_Datos{
     public JPanel pPrincipal;
     private JButton btnNuevaFila;
     private JButton btnActualizar;
-    private int ultimo_Cliente;
     // End of variables declaration   
 }

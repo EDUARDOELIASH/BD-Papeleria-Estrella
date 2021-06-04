@@ -37,7 +37,6 @@ public class Panel_Nueva_Compra extends JPanel{
     }
     
     private void initComponents(final String[] vector) throws SQLException{
-        
         jdchFechas_C = new ArrayList<com.toedter.calendar.JDateChooser>();
         P = new Compras(nProveedores);
         P = null;
@@ -52,9 +51,6 @@ public class Panel_Nueva_Compra extends JPanel{
         
         //JLabel's
         lblTitulo.setText("Nueva Compra");
-              
-        //JTabbedPane
-        //btnNueva_compra.doClick();
         
         //JButton's
         btnNueva_compra.setText("Nueva compra");
@@ -86,9 +82,9 @@ public class Panel_Nueva_Compra extends JPanel{
 
                         for (int j = 0; j < nFilas[i]; j++){ //recorrer lista   
                             //System.out.println("CALL Nueva_Compra('"+modelo.getValueAt(j, 0)+"', '"+codigos_Pro.get(i)+"', '"+jdchFechas_C.get(i)+"', "+modelo.getValueAt(j, 3)+", "+modelo.getValueAt(j,4)+", 0)");
+                            
                             String sql = "CALL Nueva_Compra('"+modelo.getValueAt(j, 0)+"', '"+codigos_Pro.get(i)+"', '"+jdchFechas_C.get(i)+"', "+modelo.getValueAt(j, 2)+", "+modelo.getValueAt(j,3)+", 0)";
                             btnRegistrarActionPerformed(con, sql);
-                            //System.out.println("hola");
                         }
                         i--;
                     }
@@ -129,11 +125,11 @@ public class Panel_Nueva_Compra extends JPanel{
             }  
         );
         
-        tNueva_compra.setModel(modelo);
-        tNueva_compra.setEnabled(false);
+        tNueva_compra1.setModel(modelo);
+        tNueva_compra1.setEnabled(false);
         //JScrollPane's
         JScrollPane spnewScrollP = new JScrollPane();
-        spnewScrollP.setViewportView(tNueva_compra);
+        spnewScrollP.setViewportView(tNueva_compra1);
         sptNueva_Compra.add(spnewScrollP);
         
         return tNueva_compra1;
