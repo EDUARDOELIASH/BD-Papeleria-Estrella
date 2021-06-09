@@ -1,6 +1,6 @@
 package Ventana;
 
-import Panels_menu_principal.Panel_Actualizar_Datos;
+import Panels_menu_principal.PActualizar_Datos;
 import Panels_menu_principal.Panel_Consulta_Compras;
 import Panels_menu_principal.Panel_Consulta_Datos;
 import Panels_menu_principal.Panel_Consulta_Ventas;
@@ -281,7 +281,7 @@ public class Papeleria extends JApplet implements ActionListener{
         }
         if (e.getSource() == m_a_Productos){
             try {
-                Panel_Actualizar_Datos panel = new Panel_Actualizar_Datos("Actualizar_Precio_P", m_a_Productos, con);
+                PActualizar_Datos panel = new PActualizar_Datos("Actualizar_Precio_P", m_a_Productos, con);
                 llamarPanel(panel.pPrincipal);
             } catch (SQLException ex) {
                 Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
@@ -289,7 +289,7 @@ public class Papeleria extends JApplet implements ActionListener{
         }
         if (e.getSource() == m_a_Servicios){
             try {
-                Panel_Actualizar_Datos panel = new Panel_Actualizar_Datos("Actualizar_Precio_S", m_a_Servicios, con);
+                PActualizar_Datos panel = new PActualizar_Datos("Actualizar_Precio_S", m_a_Servicios, con);
                 llamarPanel(panel.pPrincipal);
             } catch (SQLException ex) {
                 Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
@@ -298,7 +298,7 @@ public class Papeleria extends JApplet implements ActionListener{
         if (e.getSource() == m_a_Cliente){
             try {
                 //Actualizar telefono del cliente
-                Panel_Actualizar_Datos panel = new Panel_Actualizar_Datos("Actualizar_Numero_Tel_Cl", m_a_Cliente, con);
+                PActualizar_Datos panel = new PActualizar_Datos("Actualizar_Numero_Tel_Cl", m_a_Cliente, con);
                 llamarPanel(panel.pPrincipal);
             } catch (SQLException ex) {
                 Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
@@ -306,7 +306,7 @@ public class Papeleria extends JApplet implements ActionListener{
         }
         if (e.getSource() == m_aP_Telefono){
             try {
-                Panel_Actualizar_Datos panel = new Panel_Actualizar_Datos("Actualizar_Numero_Tel_Pro", m_aP_Telefono, con);
+                PActualizar_Datos panel = new PActualizar_Datos("Actualizar_Numero_Tel_Pro", m_aP_Telefono, con);
                 llamarPanel(panel.pPrincipal);
             } catch (SQLException ex) {
                 Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);
@@ -314,7 +314,7 @@ public class Papeleria extends JApplet implements ActionListener{
         }
         if (e.getSource() == m_aP_Direccion){
             try {
-                Panel_Actualizar_Datos panel = new Panel_Actualizar_Datos("Actualizar_Direccion_Pro", m_aP_Direccion, con);
+                PActualizar_Datos panel = new PActualizar_Datos("Actualizar_Direccion_Pro", m_aP_Direccion, con);
                 llamarPanel(panel.pPrincipal);
             } catch (SQLException ex) {
                 Logger.getLogger(Papeleria.class.getName()).log(Level.SEVERE, null, ex);

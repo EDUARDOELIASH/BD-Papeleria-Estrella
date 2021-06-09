@@ -27,8 +27,8 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Eduardo Elias Hernandez Moreno
  */
-public class Panel_Actualizar_Datos{
-    public Panel_Actualizar_Datos (String nombre_Panel, JMenuItem menuItem, Connection con) throws SQLException{   
+public class PActualizar_Datos{
+    public PActualizar_Datos (String nombre_Panel, JMenuItem menuItem, Connection con) throws SQLException{   
         this.con = con;
         this.menuItem = menuItem;
         
@@ -138,7 +138,7 @@ public class Panel_Actualizar_Datos{
                         btnActualizarActionPerformed(con, sqlAct, "Precio_P");
                     }   
                 } catch (SQLException ex) {
-                    Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PActualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
                 }    
             }                     
         });
@@ -220,7 +220,7 @@ public class Panel_Actualizar_Datos{
                         btnActualizarActionPerformed(con, sqlAct, "Precio_P");
                     }   
                 } catch (SQLException ex) {
-                    Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PActualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
                 }    
             }
         });
@@ -300,7 +300,7 @@ public class Panel_Actualizar_Datos{
                         btnActualizarActionPerformed(con, sqlAct, "Precio_P");
                     }   
                 } catch (SQLException ex) {
-                    Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PActualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
                 }    
             }
         });
@@ -402,7 +402,7 @@ public class Panel_Actualizar_Datos{
                         btnActualizarActionPerformed(con, sqlAct, columna);
                     }   
                 } catch (SQLException ex) {
-                    Logger.getLogger(Panel_Actualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PActualizar_Datos.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });

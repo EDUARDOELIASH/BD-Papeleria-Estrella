@@ -18,6 +18,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
+import metodos.Validacion_pNuevos;
 
 /**
  *
@@ -31,26 +32,26 @@ public class Panel_Nuevos_Datos{
         this.con = con;
         nFilas = 1;
         if (nombre_Panel.equals("Nuevo_Producto")){
-            pPrincipal = PNuevo_Producto();
+            pPrincipal = pNuevo_Producto();
         }
         else{
             if (nombre_Panel.equals("Nuevo_Servicio")){
-                pPrincipal = PNuevo_Servicio();
+                pPrincipal = pNuevo_Servicio();
             }
             else{
                 if (nombre_Panel.equals("Nuevo_Cliente")){
-                    pPrincipal = PNuevo_Cliente();
+                    pPrincipal = pNuevo_Cliente();
                 }
                 else {
                     if (nombre_Panel.equals("Nuevo_Proveedor")){
-                        pPrincipal = PNuevo_Proveedor();
+                        pPrincipal = pNuevo_Proveedor();
                     }
                 }
             }   
         }
     }
     
-    private JPanel PNuevo_Producto (){
+    private JPanel pNuevo_Producto (){
         JPanel panel = new JPanel();
         
         lblTitulo = new JLabel();
@@ -94,9 +95,13 @@ public class Panel_Nuevos_Datos{
             @Override
             public void actionPerformed(ActionEvent e) {
                 for (int i = 0; i < nFilas; i++) {
-                    String sql = "INSERT INTO producto VALUES('"+ dtmTable.getValueAt(i, 0)+"','"+ dtmTable.getValueAt(i, 1)+"',"+ 0 +","+dtmTable.getValueAt(i, 2)+")";
-                    //Verificar datos de tabla
+                    //Verificar datos de tabla 
+                    //codigo producto cumple con tamaño asignado 11 digitos
                     
+                    //Precio_P es un numero entero
+                    
+                    String sql = "INSERT INTO producto VALUES('"+ dtmTable.getValueAt(i, 0)+"','"+ dtmTable.getValueAt(i, 1)+"',"+ 0 +","+dtmTable.getValueAt(i, 2)+")";
+                            
                     try {
                         btnRegistrarActionPerformed(con, sql);
                     } catch (SQLException ex) {
@@ -137,7 +142,7 @@ public class Panel_Nuevos_Datos{
         return panel;
     }
     
-    private JPanel PNuevo_Servicio (){
+    private JPanel pNuevo_Servicio (){
         JPanel panel = new JPanel();
         
         lblTitulo = new JLabel();
@@ -220,7 +225,7 @@ public class Panel_Nuevos_Datos{
     }
 
     //Panel Nuevo_Cliente
-    private JPanel PNuevo_Cliente () throws SQLException{
+    private JPanel pNuevo_Cliente () throws SQLException{
         JPanel panel = new JPanel();    
         
         lblTitulo = new JLabel();
@@ -272,21 +277,36 @@ public class Panel_Nuevos_Datos{
             //Falta validar datos
             @Override
             public void actionPerformed(ActionEvent e) {
-                for (int i = 0; i < nFilas; i++){
-                    
-                    try {
-                        String sql = "INSERT INTO cliente VALUES("+dtmTabla.getValueAt(i, 0)+",'"+ dtmTabla.getValueAt(i, 1)+"','"+dtmTabla.getValueAt(i, 2)+"')";
-                        //Verificar datos de tabla
-                        btnRegistrarActionPerformed(con, sql);
-                    } catch (SQLException ex) {
-                        Logger.getLogger(Panel_Nuevos_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                //Validar datos de tabla
+                boolean datosV = false;
+                final int nCaracteresCodigo = 5;
+                final int nCaracteresTelefono = 10;
+                
+                for (int i = 0; i < nFilas; i++) {
+                    if (vCampoNoVacio(dtmTabla.getValueAt(i, 1)+"")){//Nombre cliente no vacio                     
+                        if (vCodigo(dtmTabla.getValueAt(i, 3)+"", nCaracteresTelefono)){//Numero de telefono valido
+                            datosV = true;
+                        }
+                        else JOptionPane.showMessageDialog(null, "Numero de telefono debe ser de "+nCaracteresTelefono+" digitos");
                     }
+                    else JOptionPane.showMessageDialog(null, "Nombre de cliente vacio"); 
                 }
-                JOptionPane.showMessageDialog(null, "Registro de clientes exitoso");
-                menuItem.doClick();
+                
+                //Datos son valido
+                if (datosV == true){
+                    for (int i = 0; i < nFilas; i++){
+                        try {
+                            String sql = "INSERT INTO cliente VALUES("+dtmTabla.getValueAt(i, 0)+",'"+ dtmTabla.getValueAt(i, 1)+"','"+dtmTabla.getValueAt(i, 2)+"')";  
+                            btnRegistrarActionPerformed(con, sql);
+                        } catch (SQLException ex) {
+                            Logger.getLogger(Panel_Nuevos_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    JOptionPane.showMessageDialog(null, "Registro de clientes exitoso");
+                    menuItem.doClick();
+                }
             }
         });
-
 
         btnNuevaFila.setText("Nueva Fila");
         btnNuevaFila.addActionListener(new java.awt.event.ActionListener() {
@@ -317,7 +337,7 @@ public class Panel_Nuevos_Datos{
         return panel;
     }
     
-    private JPanel PNuevo_Proveedor (){
+    private JPanel pNuevo_Proveedor (){
         JPanel panel = new JPanel();
         
         pPrincipal = new JPanel();
@@ -351,23 +371,46 @@ public class Panel_Nuevos_Datos{
 
         jScrollPane1.setViewportView(tTabla);
         
-        final javax.swing.table.DefaultTableModel dtmTable = (DefaultTableModel) tTabla.getModel();
+        final javax.swing.table.DefaultTableModel dtmTabla = (DefaultTableModel) tTabla.getModel();
         //Botones
         btnRegistrar.setText("Registrar");
         btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //Validar datos de tabla
+                final int nCaracteresCodigo = 5;
+                final int nCaracteresTelefono = 10;
+                String error="";
+                
                 for (int i = 0; i < nFilas; i++) {
-                    try {
-                        String sql = "INSERT INTO proveedor VALUES('"+ dtmTable.getValueAt(i, 0)+"','"+ dtmTable.getValueAt(i, 1)+"','"+dtmTable.getValueAt(i, 2)+"','"+dtmTable.getValueAt(i, 3)+"')";
-                        //Verificar datos de tabla
-                        btnRegistrarActionPerformed(con, sql);
-                    } catch (SQLException ex) {
-                        Logger.getLogger(Panel_Nuevos_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                    if (vCodigo(dtmTabla.getValueAt(i, 0)+"", nCaracteresCodigo)==false){//Codigo proveedor valido
+                        error += "Codigo proveedor fila "+i+" debe ser de "+nCaracteresCodigo+" digitos\n";
+                    }
+                    if (vCampoNoVacio(dtmTabla.getValueAt(i, 1)+"")==false){//Nombre proveedor no vacio
+                        error += "Nombre de proveedor fila "+i+" vacio\n";    
+                    }
+                    if (vCampoNoVacio(dtmTabla.getValueAt(i, 2)+"")==false){//Direccion proveedor no vacio
+                        error += "Direccion de proveedor fila "+i+" vacio\n";
+                    }
+                    if (vCodigo(dtmTabla.getValueAt(i, 3)+"", nCaracteresTelefono)==false){//Numero de telefono valido
+                        error += "Numero de telefono fila "+i+" debe ser de "+nCaracteresTelefono+" digitos\n";
                     }
                 }
-                JOptionPane.showMessageDialog(null, "Registro de proveedores exitoso");
-                menuItem.doClick();
+                
+                //Si datos son validos
+                if (error.equals("")){
+                    for (int i = 0; i < nFilas; i++) {
+                        try {
+                            String sql = "INSERT INTO proveedor VALUES('"+ dtmTabla.getValueAt(i, 0)+"','"+ dtmTabla.getValueAt(i, 1)+"','"+dtmTabla.getValueAt(i, 2)+"','"+dtmTabla.getValueAt(i, 3)+"')";
+                            btnRegistrarActionPerformed(con, sql);
+                        } catch (SQLException ex) {
+                            Logger.getLogger(Panel_Nuevos_Datos.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    JOptionPane.showMessageDialog(null, "Registro de proveedores exitoso");
+                    menuItem.doClick();
+                }
+                else JOptionPane.showMessageDialog(null, error);
             }
         });
 
@@ -375,7 +418,7 @@ public class Panel_Nuevos_Datos{
         btnNuevaFila.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                btnNuevaFilaActionPerformed(e, dtmTable, vector);
+                btnNuevaFilaActionPerformed(e, dtmTabla, vector);
             }
         });
 
@@ -415,18 +458,37 @@ public class Panel_Nuevos_Datos{
         return Numero_Cl+1;
     }
     
+    //Verificar datos
+    private boolean vCodigo(String codigo, int nCaracteres){
+        Validacion_pNuevos verificar = new Validacion_pNuevos();
+        
+        return verificar.vnCaracteres(codigo, nCaracteres);
+    }
+    
+    private boolean vCampoNoVacio (String campo){
+        if (campo.length()!=0 && !campo.equals("null")){ 
+            for (int i=0; i<campo.length(); i++){
+                if (campo.charAt(i) != ' '){
+                    return true;
+                }                                      
+            }
+            return false;
+        }    
+        else{ 
+            return false;
+        }
+    }
+    
+    //listeners
     private void btnNuevaFilaActionPerformed (java.awt.event.ActionEvent evt, javax.swing.table.DefaultTableModel dtmTabla, String[] vector){       
         dtmTabla.addRow(vector);
         nFilas ++;
     }
     
-    //Validar datos
     private void btnRegistrarActionPerformed (Connection con, String sql) throws SQLException{
         try (Statement statement = con.createStatement()) {
             statement.executeUpdate(sql);   
-        }
-        
-        
+        }  
     }   
     
     // Variables declaration - do not modify

@@ -82,7 +82,8 @@ public class Panel_Nueva_Compra extends JPanel{
 
                         for (int j = 0; j < nFilas[i]; j++){ //recorrer lista   
                             //System.out.println("CALL Nueva_Compra('"+modelo.getValueAt(j, 0)+"', '"+codigos_Pro.get(i)+"', '"+jdchFechas_C.get(i)+"', "+modelo.getValueAt(j, 3)+", "+modelo.getValueAt(j,4)+", 0)");
-                            
+                            //validar valores
+                            //funcion contarCaracteres
                             String sql = "CALL Nueva_Compra('"+modelo.getValueAt(j, 0)+"', '"+codigos_Pro.get(i)+"', '"+jdchFechas_C.get(i)+"', "+modelo.getValueAt(j, 2)+", "+modelo.getValueAt(j,3)+", 0)";
                             btnRegistrarActionPerformed(con, sql);
                         }
